@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>中文词汇 Flashcards</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;700;900&family=Noto+Sans+Thai:wght@300;400;600&family=Ma+Shan+Zheng&display=swap');
+
+  :root {
+    --ink: #1a1208;
+    --paper: #f5efe0;
+    --paper2: #ede3cc;
+    --red: #c0392b;
+    --gold: #b8860b;
+    --accent: #8b4513;
+    --light: #faf6ed;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background-color: var(--paper);
+    background-image:
+      repeating-linear-gradient(0deg, transparent, transparent 39px, rgba(180,160,100,0.15) 39px, rgba(180,160,100,0.15) 40px),
+      repeating-linear-gradient(90deg, transparent, transparent 39px, rgba(180,160,100,0.08) 39px, rgba(180,160,100,0.08) 40px);
+    min-height: 100vh;
+    font-family: 'Noto Sans Thai', sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px 16px 40px;
+    overflow-x: hidden;
+  }
+
+  header {
+    text-align: center;
+    margin-bottom: 24px;
+    width: 100%;
+  }
+
+  .title-zh {
+    font-family: 'Ma Shan Zheng', cursive;
+    font-size: 2rem;
+    color: var(--red);
+    line-height: 1;
+    letter-spacing: 0.1em;
+  }
+
+  .title-th {
+    font-size: 0.8rem;
+    color: var(--accent);
+    letter-spacing: 0.05em;
+    margin-top: 4px;
+    opacity: 0.8;
+  }
+
+  .progress-bar-wrap {
+    width: 100%;
+    max-width: 380px;
+    background: var(--paper2);
+    border-radius: 99px;
+    height: 6px;
+    margin: 0 auto 8px;
+    overflow: hidden;
+    border: 1px solid rgba(139,69,19,0.2);
+  }
+
+  .progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, var(--red), var(--gold));
+    border-radius: 99px;
+    transition: width 0.4s ease;
+  }
+
+  .counter {
+    font-size: 0.75rem;
+    color: var(--accent);
+    text-align: center;
+    margin-bottom: 20px;
+    letter-spacing: 0.05em;
+  }
+
+  /* CARD */
+  .scene {
+    width: 100%;
+    max-width: 380px;
+    height: 280px;
+    perspective: 900px;
+    cursor: pointer;
+    margin: 0 auto;
+  }
+
+  .card {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    transform-style: preserve-3d;
+    transition: transform 0.65s cubic-bezier(0.4, 0, 0.2, 1);
+    border-radius: 16px;
+  }
+
+  .card.flipped {
+    transform: rotateY(180deg);
+  }
+
+  .face {
+    position: absolute;
+    inset: 0;
+    border-radius: 16px;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    box-shadow:
+      0 2px 4px rgba(0,0,0,0.06),
+      0 8px 24px rgba(139,69,19,0.12),
+      inset 0 1px 0 rgba(255,255,255,0.6);
+  }
+
+  .face-front {
+    background: var(--light);
+    border: 1.5px solid rgba(139,69,19,0.18);
+    background-image:
+      radial-gradient(ellipse at 20% 20%, rgba(192,57,43,0.04) 0%, transparent 60%),
+      radial-gradient(ellipse at 80% 80%, rgba(184,134,11,0.05) 0%, transparent 60%);
+  }
+
+  .face-back {
+    background: linear-gradient(145deg, #fff8ee, #f5ece0);
+    border: 1.5px solid rgba(139,69,19,0.22);
+    transform: rotateY(180deg);
+    overflow-y: auto;
+    justify-content: flex-start;
+    padding-top: 20px;
+  }
+
+  /* Decorative corner marks */
+  .face-front::before, .face-front::after {
+    content: '✦';
+    position: absolute;
+    color: rgba(192,57,43,0.18);
+    font-size: 1.1rem;
+  }
+  .face-front::before { top: 12px; left: 14px; }
+  .face-front::after  { bottom: 12px; right: 14px; }
+
+  .zh-char {
+    font-family: 'Ma Shan Zheng', cursive;
+    font-size: 5rem;
+    color: var(--ink);
+    line-height: 1;
+    text-align: center;
+    user-select: none;
+  }
+
+  .tap-hint {
+    position: absolute;
+    bottom: 14px;
+    font-size: 0.65rem;
+    color: rgba(139,69,19,0.5);
+    letter-spacing: 0.06em;
+  }
+
+  /* Back face content */
+  .pinyin {
+    font-family: 'Noto Serif SC', serif;
+    font-size: 1.3rem;
+    color: var(--red);
+    font-weight: 400;
+    letter-spacing: 0.05em;
+    margin-bottom: 6px;
+  }
+
+  .meaning {
+    font-size: 1rem;
+    color: var(--ink);
+    font-weight: 600;
+    text-align: center;
+    margin-bottom: 14px;
+  }
+
+  .divider {
+    width: 60px;
+    height: 1.5px;
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+    margin: 0 auto 14px;
+  }
+
+  .example-label {
+    font-size: 0.65rem;
+    letter-spacing: 0.12em;
+    color: var(--accent);
+    text-transform: uppercase;
+    margin-bottom: 6px;
+    opacity: 0.7;
+  }
+
+  .example-zh {
+    font-family: 'Noto Serif SC', serif;
+    font-size: 0.95rem;
+    color: var(--ink);
+    text-align: center;
+    line-height: 1.6;
+    margin-bottom: 4px;
+  }
+
+  .example-th {
+    font-size: 0.75rem;
+    color: #6b4f2a;
+    text-align: center;
+    line-height: 1.5;
+    opacity: 0.85;
+  }
+
+  /* NAV BUTTONS */
+  .nav {
+    display: flex;
+    gap: 16px;
+    margin-top: 24px;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    max-width: 380px;
+  }
+
+  .btn {
+    flex: 1;
+    padding: 14px 0;
+    border: none;
+    border-radius: 12px;
+    font-family: 'Noto Sans Thai', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.18s ease;
+    letter-spacing: 0.03em;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .btn-prev {
+    background: var(--paper2);
+    color: var(--accent);
+    border: 1.5px solid rgba(139,69,19,0.22);
+  }
+
+  .btn-next {
+    background: var(--red);
+    color: #fff;
+    box-shadow: 0 4px 12px rgba(192,57,43,0.3);
+  }
+
+  .btn:active { transform: scale(0.96); }
+
+  .btn-prev:active { background: #e0d4b8; }
+  .btn-next:active { background: #a93226; }
+
+  .btn-shuffle {
+    background: none;
+    border: 1.5px solid rgba(139,69,19,0.25);
+    color: var(--accent);
+    padding: 10px 18px;
+    border-radius: 10px;
+    font-size: 0.75rem;
+    cursor: pointer;
+    font-family: 'Noto Sans Thai', sans-serif;
+    margin-top: 12px;
+    -webkit-tap-highlight-color: transparent;
+    transition: all 0.18s;
+  }
+
+  .btn-shuffle:active { background: var(--paper2); transform: scale(0.96); }
+
+  /* card number dots */
+  .dots {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    justify-content: center;
+    max-width: 380px;
+    margin-top: 16px;
+  }
+
+  .dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--paper2);
+    border: 1px solid rgba(139,69,19,0.25);
+    transition: background 0.3s;
+    cursor: pointer;
+  }
+
+  .dot.active { background: var(--red); border-color: var(--red); }
+  .dot.seen   { background: var(--gold); border-color: var(--gold); }
+
+</style>
+</head>
+<body>
+
+<header>
+  <div class="title-zh">词汇卡片</div>
+  <div class="title-th">แฟลชการ์ดคำศัพท์ภาษาจีน</div>
+</header>
+
+<div class="progress-bar-wrap">
+  <div class="progress-bar" id="progressBar"></div>
+</div>
+<div class="counter" id="counter">1 / 21</div>
+
+<div class="scene" id="scene" onclick="flipCard()">
+  <div class="card" id="card">
+    <div class="face face-front">
+      <div class="zh-char" id="frontChar"></div>
+      <div class="tap-hint">แตะเพื่อดูคำตอบ</div>
+    </div>
+    <div class="face face-back" id="backFace">
+    </div>
+  </div>
+</div>
+
+<div class="nav">
+  <button class="btn btn-prev" onclick="prevCard()">◀ ก่อนหน้า</button>
+  <button class="btn btn-next" onclick="nextCard()">ถัดไป ▶</button>
+</div>
+
+<button class="btn-shuffle" onclick="shuffleCards()">🔀 สุ่มลำดับใหม่</button>
+
+<div class="dots" id="dots"></div>
+
+<script>
+const vocab = [
+  {
+    zh: "与",
+    pinyin: "yǔ",
+    meaning: "กับ / และ",
+    exZh: "我与他一起完成了这个项目。",
+    exTh: "ฉันกับเขาทำโปรเจกต์นี้สำเร็จด้วยกัน"
+  },
+  {
+    zh: "许多",
+    pinyin: "xǔduō",
+    meaning: "มากมาย / หลายอย่าง",
+    exZh: "这里有许多好吃的食物。",
+    exTh: "ที่นี่มีอาหารอร่อยมากมาย"
+  },
+  {
+    zh: "共同",
+    pinyin: "gòngtóng",
+    meaning: "ร่วมกัน / ส่วนรวม",
+    exZh: "我们有共同的目标。",
+    exTh: "พวกเราตั้งเป้าหมายร่วมกัน"
+  },
+  {
+    zh: "阳光",
+    pinyin: "yángguāng",
+    meaning: "สดใส / แสงแดด (เปรียบบุคลิก)",
+    exZh: "她是一个阳光的女孩。",
+    exTh: "เธอเป็นสาวที่มีบุคลิกสดใสร่าเริง"
+  },
+  {
+    zh: "积极",
+    pinyin: "jījí",
+    meaning: "เชิงบวก / กระตือรือร้น",
+    exZh: "他对工作总是很积极。",
+    exTh: "เขากระตือรือร้นเกี่ยวกับงานอยู่เสมอ"
+  },
+  {
+    zh: "特点",
+    pinyin: "tèdiǎn",
+    meaning: "ลักษณะเด่น / จุดเด่น",
+    exZh: "这道菜的特点是又辣又香。",
+    exTh: "จุดเด่นของเมนูนี้คือเผ็ดและหอม"
+  },
+  {
+    zh: "害羞",
+    pinyin: "hàixiū",
+    meaning: "อาย / ขี้อาย",
+    exZh: "她第一次见面时很害羞。",
+    exTh: "เธอขี้อายมากตอนเจอกันครั้งแรก"
+  },
+  {
+    zh: "主动",
+    pinyin: "zhǔdòng",
+    meaning: "ริเริ่มเอง / กระตือรือร้น",
+    exZh: "他主动帮我解决了问题。",
+    exTh: "เขาริเริ่มช่วยแก้ปัญหาให้ฉันเอง"
+  },
+  {
+    zh: "现代人",
+    pinyin: "xiàndài rén",
+    meaning: "คนยุคใหม่ / คนสมัยนี้",
+    exZh: "现代人离不开手机。",
+    exTh: "คนยุคใหม่ขาดโทรศัพท์มือถือไม่ได้"
+  },
+  {
+    zh: "普遍",
+    pinyin: "pǔbiàn",
+    meaning: "แพร่หลาย / ทั่วไป",
+    exZh: "用手机付款现在很普遍。",
+    exTh: "การจ่ายเงินผ่านมือถือแพร่หลายมากในปัจจุบัน"
+  },
+  {
+    zh: "甚至",
+    pinyin: "shènzhì",
+    meaning: "แม้กระทั่ง / ถึงขนาด",
+    exZh: "他忙得甚至忘了吃饭。",
+    exTh: "เขา바빠까지ขนาดลืมกินข้าวเลย"
+  },
+  {
+    zh: "不小心",
+    pinyin: "bùxiǎoxīn",
+    meaning: "ไม่ระวัง / สะเพร่า",
+    exZh: "我不小心把水杯打翻了。",
+    exTh: "ฉันไม่ระวังทำแก้วน้ำหกเลย"
+  },
+  {
+    zh: "可就",
+    pinyin: "kějiù",
+    meaning: "ก็จะ (เน้นผลที่ตามมา)",
+    exZh: "你再不小心，麻烦可就大了。",
+    exTh: "ถ้าไม่ระวังอีก เรื่องก็จะใหญ่โตขึ้นมาเลย"
+  },
+  {
+    zh: "科学技术",
+    pinyin: "kēxué jìshù",
+    meaning: "วิทยาศาสตร์และเทคโนโลยี",
+    exZh: "科学技术改变了我们的生活。",
+    exTh: "วิทยาศาสตร์และเทคโนโลยีเปลี่ยนแปลงชีวิตเรา"
+  },
+  {
+    zh: "带来",
+    pinyin: "dài lái",
+    meaning: "นำมาซึ่ง / ก่อให้เกิด",
+    exZh: "旅行给我带来了很多快乐。",
+    exTh: "การท่องเที่ยวนำมาซึ่งความสุขมากมายให้ฉัน"
+  },
+  {
+    zh: "幸福",
+    pinyin: "xìngfú",
+    meaning: "ความสุข / มีความสุข",
+    exZh: "家人在一起，我感到很幸福。",
+    exTh: "ได้อยู่กับครอบครัว ฉันรู้สึกมีความสุขมาก"
+  },
+  {
+    zh: "羡慕",
+    pinyin: "xiànmù",
+    meaning: "อิจฉา (เชิงชื่นชม) / ชื่นชม",
+    exZh: "我很羡慕他能说多种语言。",
+    exTh: "ฉันอิจฉาที่เขาพูดได้หลายภาษา"
+  },
+  {
+    zh: "逐渐",
+    pinyin: "zhújiàn",
+    meaning: "ค่อยๆ / ทีละน้อย",
+    exZh: "天气逐渐变凉了。",
+    exTh: "อากาศค่อยๆ เย็นลงทีละน้อย"
+  },
+  {
+    zh: "提供",
+    pinyin: "tígōng",
+    meaning: "จัดให้ / มอบให้ / ให้บริการ",
+    exZh: "学校提供免费的午餐。",
+    exTh: "โรงเรียนจัดอาหารกลางวันให้ฟรี"
+  },
+  {
+    zh: "超过",
+    pinyin: "chāoguò",
+    meaning: "เกินกว่า / มากกว่า",
+    exZh: "今天的气温超过了三十五度。",
+    exTh: "อุณหภูมิวันนี้เกินสามสิบห้าองศา"
+  },
+  {
+    zh: "按",
+    pinyin: "àn",
+    meaning: "ตาม / อ้างอิง / กด",
+    exZh: "请按规定填写这张表格。",
+    exTh: "กรุณากรอกแบบฟอร์มนี้ตามกฎระเบียบ"
+  }
+];
+
+let order = [...Array(vocab.length).keys()];
+let current = 0;
+let seen = new Set();
+let flipped = false;
+
+function shuffleCards() {
+  for (let i = order.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [order[i], order[j]] = [order[j], order[i]];
+  }
+  current = 0;
+  seen.clear();
+  renderCard(false);
+  renderDots();
+}
+
+function renderCard(doFlip) {
+  const idx = order[current];
+  const v = vocab[idx];
+  flipped = false;
+  document.getElementById('card').classList.remove('flipped');
+
+  document.getElementById('frontChar').textContent = v.zh;
+
+  const back = document.getElementById('backFace');
+  back.innerHTML = `
+    <div class="pinyin">${v.pinyin}</div>
+    <div class="meaning">${v.meaning}</div>
+    <div class="divider"></div>
+    <div class="example-label">ประโยคตัวอย่าง</div>
+    <div class="example-zh">${v.exZh}</div>
+    <div class="example-th">${v.exTh}</div>
+  `;
+
+  const pct = ((current + 1) / vocab.length) * 100;
+  document.getElementById('progressBar').style.width = pct + '%';
+  document.getElementById('counter').textContent = `${current + 1} / ${vocab.length}`;
+  renderDots();
+}
+
+function flipCard() {
+  flipped = !flipped;
+  document.getElementById('card').classList.toggle('flipped', flipped);
+  if (flipped) {
+    seen.add(current);
+    renderDots();
+  }
+}
+
+function nextCard() {
+  seen.add(current);
+  if (current < vocab.length - 1) {
+    current++;
+  } else {
+    current = 0;
+  }
+  renderCard(false);
+}
+
+function prevCard() {
+  if (current > 0) {
+    current--;
+  } else {
+    current = vocab.length - 1;
+  }
+  renderCard(false);
+}
+
+function renderDots() {
+  const container = document.getElementById('dots');
+  container.innerHTML = '';
+  for (let i = 0; i < vocab.length; i++) {
+    const d = document.createElement('div');
+    d.className = 'dot';
+    if (i === current) d.classList.add('active');
+    else if (seen.has(i)) d.classList.add('seen');
+    d.onclick = () => { current = i; renderCard(false); };
+    container.appendChild(d);
+  }
+}
+
+// keyboard support
+document.addEventListener('keydown', e => {
+  if (e.key === 'ArrowRight') nextCard();
+  else if (e.key === 'ArrowLeft') prevCard();
+  else if (e.key === ' ' || e.key === 'Enter') flipCard();
+});
+
+renderCard(false);
+renderDots();
+</script>
+</body>
+</html>
