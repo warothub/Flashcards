@@ -1,0 +1,1723 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>中文词汇 Flashcards</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;700;900&family=Noto+Sans+Thai:wght@300;400;600&family=Ma+Shan+Zheng&display=swap');
+  :root{--ink:#1a1208;--paper:#f5efe0;--paper2:#ede3cc;--red:#c0392b;--gold:#b8860b;--accent:#8b4513;--light:#faf6ed;}
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+  body{background-color:var(--paper);background-image:repeating-linear-gradient(0deg,transparent,transparent 39px,rgba(180,160,100,0.15) 39px,rgba(180,160,100,0.15) 40px),repeating-linear-gradient(90deg,transparent,transparent 39px,rgba(180,160,100,0.08) 39px,rgba(180,160,100,0.08) 40px);min-height:100vh;font-family:'Noto Sans Thai',sans-serif;display:flex;flex-direction:column;align-items:center;padding:16px 14px 40px;overflow-x:hidden;}
+  header{text-align:center;margin-bottom:14px;width:100%;}
+  .title-zh{font-family:'Ma Shan Zheng',cursive;font-size:1.8rem;color:var(--red);line-height:1;letter-spacing:0.1em;}
+  .title-th{font-size:0.75rem;color:var(--accent);letter-spacing:0.05em;margin-top:3px;opacity:0.8;}
+  .controls{width:100%;max-width:400px;display:flex;gap:8px;margin-bottom:10px;}
+  .search{flex:1;padding:10px 14px;border-radius:10px;border:1.5px solid rgba(139,69,19,0.22);background:var(--light);font-family:'Noto Sans Thai',sans-serif;font-size:0.85rem;color:var(--ink);outline:none;}
+  .search:focus{border-color:var(--red);}
+  .progress-bar-wrap{width:100%;max-width:400px;background:var(--paper2);border-radius:99px;height:6px;margin:0 auto 8px;overflow:hidden;border:1px solid rgba(139,69,19,0.2);}
+  .progress-bar{height:100%;background:linear-gradient(90deg,var(--red),var(--gold));border-radius:99px;transition:width 0.4s ease;}
+  .counter{font-size:0.75rem;color:var(--accent);text-align:center;margin-bottom:16px;letter-spacing:0.05em;}
+  .scene{width:100%;max-width:400px;height:300px;perspective:1000px;cursor:pointer;margin:0 auto;}
+  .card{width:100%;height:100%;position:relative;transform-style:preserve-3d;transition:transform 0.6s cubic-bezier(0.4,0,0.2,1);border-radius:16px;}
+  .card.flipped{transform:rotateY(180deg);}
+  .face{position:absolute;inset:0;border-radius:16px;backface-visibility:hidden;-webkit-backface-visibility:hidden;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:22px;box-shadow:0 2px 4px rgba(0,0,0,0.06),0 8px 24px rgba(139,69,19,0.12),inset 0 1px 0 rgba(255,255,255,0.6);}
+  .face-front{background:var(--light);border:1.5px solid rgba(139,69,19,0.18);background-image:radial-gradient(ellipse at 20% 20%,rgba(192,57,43,0.04) 0%,transparent 60%),radial-gradient(ellipse at 80% 80%,rgba(184,134,11,0.05) 0%,transparent 60%);}
+  .face-back{background:linear-gradient(145deg,#fff8ee,#f5ece0);border:1.5px solid rgba(139,69,19,0.22);transform:rotateY(180deg);overflow-y:auto;justify-content:flex-start;padding-top:20px;}
+  .face-front::before,.face-front::after{content:'\2726';position:absolute;color:rgba(192,57,43,0.18);font-size:1.1rem;}
+  .face-front::before{top:12px;left:14px;}.face-front::after{bottom:12px;right:14px;}
+  .zh-char{font-family:'Ma Shan Zheng',cursive;font-size:4.5rem;color:var(--ink);line-height:1.1;text-align:center;user-select:none;}
+  .zh-char.long{font-size:3rem;}
+  .zh-char.xlong{font-size:2.2rem;}
+  .tap-hint{position:absolute;bottom:14px;font-size:0.65rem;color:rgba(139,69,19,0.5);letter-spacing:0.06em;}
+  .pinyin{font-family:'Noto Serif SC',serif;font-size:1.3rem;color:var(--red);font-weight:400;letter-spacing:0.05em;margin-bottom:6px;text-align:center;}
+  .meaning{font-size:1rem;color:var(--ink);font-weight:600;text-align:center;margin-bottom:14px;}
+  .divider{width:60px;height:1.5px;background:linear-gradient(90deg,transparent,var(--gold),transparent);margin:0 auto 14px;}
+  .example-label{font-size:0.62rem;letter-spacing:0.12em;color:var(--accent);text-transform:uppercase;margin-bottom:6px;opacity:0.7;text-align:center;}
+  .example-zh{font-family:'Noto Serif SC',serif;font-size:1rem;color:var(--ink);text-align:center;line-height:1.7;margin-bottom:5px;}
+  .example-th{font-size:0.78rem;color:#6b4f2a;text-align:center;line-height:1.5;opacity:0.9;}
+  .nav{display:flex;gap:12px;margin-top:20px;align-items:center;justify-content:center;width:100%;max-width:400px;}
+  .btn{flex:1;padding:14px 0;border:none;border-radius:12px;font-family:'Noto Sans Thai',sans-serif;font-size:0.9rem;font-weight:600;cursor:pointer;transition:all 0.18s ease;letter-spacing:0.03em;}
+  .btn-prev{background:var(--paper2);color:var(--accent);border:1.5px solid rgba(139,69,19,0.22);}
+  .btn-next{background:var(--red);color:#fff;box-shadow:0 4px 12px rgba(192,57,43,0.3);}
+  .btn:active{transform:scale(0.96);}
+  .btn-prev:active{background:#e0d4b8;}.btn-next:active{background:#a93226;}
+  .btn-shuffle{background:none;border:1.5px solid rgba(139,69,19,0.25);color:var(--accent);padding:10px 18px;border-radius:10px;font-size:0.75rem;cursor:pointer;font-family:'Noto Sans Thai',sans-serif;margin-top:12px;transition:all 0.18s;}
+  .btn-shuffle:active{background:var(--paper2);transform:scale(0.96);}
+</style>
+</head>
+<body>
+<header>
+  <div class="title-zh">词汇卡片</div>
+  <div class="title-th">แฟลชการ์ดคำศัพท์ภาษาจีน</div>
+</header>
+<div class="controls">
+  <input class="search" id="search" type="text" placeholder="ค้นหาคำศัพท์ (จีน/พินอิน/ไทย)...">
+</div>
+<div class="progress-bar-wrap"><div class="progress-bar" id="progressBar"></div></div>
+<div class="counter" id="counter"></div>
+<div class="scene" id="scene" onclick="flipCard()">
+  <div class="card" id="card">
+    <div class="face face-front"><div class="zh-char" id="frontChar"></div><div class="tap-hint">แตะเพื่อดูคำตอบ</div></div>
+    <div class="face face-back" id="backFace"></div>
+  </div>
+</div>
+<div class="nav">
+  <button class="btn btn-prev" onclick="prevCard()">◀ ก่อนหน้า</button>
+  <button class="btn btn-next" onclick="nextCard()">ถัดไป ▶</button>
+</div>
+<button class="btn-shuffle" onclick="shuffleCards()">🔀 สุ่มลำดับใหม่</button>
+<script>
+const allVocab = [
+{
+"zh": "与",
+"pinyin": "yǔ",
+"meaning": "กับ / และ",
+"exZh": "我与他一起完成了这个项目。",
+"exTh": "ฉันกับเขาทำโปรเจกต์นี้สำเร็จด้วยกัน"
+},
+{
+"zh": "许多",
+"pinyin": "xǔduō",
+"meaning": "มากมาย / หลายอย่าง",
+"exZh": "这里有许多好吃的食物。",
+"exTh": "ที่นี่มีอาหารอร่อยมากมาย"
+},
+{
+"zh": "共同",
+"pinyin": "gòngtóng",
+"meaning": "ร่วมกัน / ส่วนรวม",
+"exZh": "我们有共同的目标。",
+"exTh": "พวกเราตั้งเป้าหมายร่วมกัน"
+},
+{
+"zh": "阳光",
+"pinyin": "yángguāng",
+"meaning": "สดใส / แสงแดด (เปรียบบุคลิก)",
+"exZh": "她是一个阳光的女孩。",
+"exTh": "เธอเป็นสาวที่มีบุคลิกสดใสร่าเริง"
+},
+{
+"zh": "积极",
+"pinyin": "jījí",
+"meaning": "เชิงบวก / กระตือรือร้น",
+"exZh": "他对工作总是很积极。",
+"exTh": "เขากระตือรือร้นเกี่ยวกับงานอยู่เสมอ"
+},
+{
+"zh": "特点",
+"pinyin": "tèdiǎn",
+"meaning": "ลักษณะเด่น / จุดเด่น",
+"exZh": "这道菜的特点是又辣又香。",
+"exTh": "จุดเด่นของเมนูนี้คือเผ็ดและหอม"
+},
+{
+"zh": "害羞",
+"pinyin": "hàixiū",
+"meaning": "อาย / ขี้อาย",
+"exZh": "她第一次见面时很害羞。",
+"exTh": "เธอขี้อายมากตอนเจอกันครั้งแรก"
+},
+{
+"zh": "主动",
+"pinyin": "zhǔdòng",
+"meaning": "ริเริ่มเอง / กระตือรือร้น",
+"exZh": "他主动帮我解决了问题。",
+"exTh": "เขาริเริ่มช่วยแก้ปัญหาให้ฉันเอง"
+},
+{
+"zh": "现代人",
+"pinyin": "xiàndài rén",
+"meaning": "คนยุคใหม่ / คนสมัยนี้",
+"exZh": "现代人离不开手机。",
+"exTh": "คนยุคใหม่ขาดโทรศัพท์มือถือไม่ได้"
+},
+{
+"zh": "普遍",
+"pinyin": "pǔbiàn",
+"meaning": "แพร่หลาย / ทั่วไป",
+"exZh": "用手机付款现在很普遍。",
+"exTh": "การจ่ายเงินผ่านมือถือแพร่หลายมากในปัจจุบัน"
+},
+{
+"zh": "甚至",
+"pinyin": "shènzhì",
+"meaning": "แม้กระทั่ง / ถึงขนาด",
+"exZh": "他忙得甚至忘了吃饭。",
+"exTh": "เขายุ่งมากจนแม้กระทั่งลืมกินข้าวเลย"
+},
+{
+"zh": "不小心",
+"pinyin": "bùxiǎoxīn",
+"meaning": "ไม่ระวัง / สะเพร่า",
+"exZh": "我不小心把水杯打翻了。",
+"exTh": "ฉันไม่ระวังทำแก้วน้ำหกเลย"
+},
+{
+"zh": "可就",
+"pinyin": "kějiù",
+"meaning": "ก็จะ (เน้นผลที่ตามมา)",
+"exZh": "你再不小心，麻烦可就大了。",
+"exTh": "ถ้าไม่ระวังอีก เรื่องก็จะใหญ่โตขึ้นมาเลย"
+},
+{
+"zh": "科学技术",
+"pinyin": "kēxué jìshù",
+"meaning": "วิทยาศาสตร์และเทคโนโลยี",
+"exZh": "科学技术改变了我们的生活。",
+"exTh": "วิทยาศาสตร์และเทคโนโลยีเปลี่ยนแปลงชีวิตเรา"
+},
+{
+"zh": "带来",
+"pinyin": "dàilái",
+"meaning": "นำมาซึ่ง / ก่อให้เกิด",
+"exZh": "旅行给我带来了很多快乐。",
+"exTh": "การท่องเที่ยวนำมาซึ่งความสุขมากมายให้ฉัน"
+},
+{
+"zh": "幸福",
+"pinyin": "xìngfú",
+"meaning": "ความสุข / มีความสุข",
+"exZh": "家人在一起，我感到很幸福。",
+"exTh": "ได้อยู่กับครอบครัว ฉันรู้สึกมีความสุขมาก"
+},
+{
+"zh": "羡慕",
+"pinyin": "xiànmù",
+"meaning": "อิจฉา (เชิงชื่นชม) / ชื่นชม",
+"exZh": "我很羡慕他能说多种语言。",
+"exTh": "ฉันอิจฉาที่เขาพูดได้หลายภาษา"
+},
+{
+"zh": "逐渐",
+"pinyin": "zhújiàn",
+"meaning": "ค่อยๆ / ทีละน้อย",
+"exZh": "天气逐渐变凉了。",
+"exTh": "อากาศค่อยๆ เย็นลงทีละน้อย"
+},
+{
+"zh": "提供",
+"pinyin": "tígōng",
+"meaning": "จัดให้ / มอบให้ / ให้บริการ",
+"exZh": "学校提供免费的午餐。",
+"exTh": "โรงเรียนจัดอาหารกลางวันให้ฟรี"
+},
+{
+"zh": "超过",
+"pinyin": "chāoguò",
+"meaning": "เกินกว่า / มากกว่า",
+"exZh": "今天的气温超过了三十五度。",
+"exTh": "อุณหภูมิวันนี้เกินสามสิบห้าองศา"
+},
+{
+"zh": "按",
+"pinyin": "àn",
+"meaning": "ตาม / อ้างอิง / กด",
+"exZh": "请按规定填写这张表格。",
+"exTh": "กรุณากรอกแบบฟอร์มนี้ตามกฎระเบียบ"
+},
+{
+"zh": "兽医",
+"pinyin": "shòuyī",
+"meaning": "สัตวแพทย์",
+"exZh": "我带小狗去看兽医。",
+"exTh": "ฉันพาลูกหมาไปหาสัตวแพทย์"
+},
+{
+"zh": "百分之",
+"pinyin": "bǎifēnzhī",
+"meaning": "เปอร์เซ็นต์ (ร้อยละ)",
+"exZh": "百分之八十的学生通过了考试。",
+"exTh": "นักเรียนร้อยละแปดสิบสอบผ่าน"
+},
+{
+"zh": "交通工具",
+"pinyin": "jiāotōng gōngjù",
+"meaning": "พาหนะ / ยานพาหนะ",
+"exZh": "地铁是很方便的交通工具。",
+"exTh": "รถไฟใต้ดินเป็นพาหนะที่สะดวกมาก"
+},
+{
+"zh": "到底",
+"pinyin": "dàodǐ",
+"meaning": "สุดท้ายแล้ว / ตกลงว่า",
+"exZh": "你到底想吃什么？",
+"exTh": "ตกลงเธออยากกินอะไรกันแน่"
+},
+{
+"zh": "发生",
+"pinyin": "fāshēng",
+"meaning": "เกิดขึ้น",
+"exZh": "昨天发生了一件奇怪的事。",
+"exTh": "เมื่อวานเกิดเรื่องแปลกๆ ขึ้น"
+},
+{
+"zh": "辛苦你了",
+"pinyin": "xīnkǔ nǐ le",
+"meaning": "ขอบคุณที่เหนื่อย (ใช้ตอนเสร็จงาน)",
+"exZh": "这件事辛苦你了。",
+"exTh": "เรื่องนี้ขอบคุณที่เหนื่อยนะ"
+},
+{
+"zh": "麻烦你了",
+"pinyin": "máfan nǐ le",
+"meaning": "รบกวนคุณด้วย",
+"exZh": "这么晚还来帮我，麻烦你了。",
+"exTh": "ดึกแล้วยังมาช่วย รบกวนคุณด้วยนะ"
+},
+{
+"zh": "抱歉",
+"pinyin": "bàoqiàn",
+"meaning": "ขอโทษ (กับเพื่อนสนิท/ประชด)",
+"exZh": "抱歉，我来晚了。",
+"exTh": "ขอโทษนะ ฉันมาสาย"
+},
+{
+"zh": "不好意思",
+"pinyin": "bùhǎoyìsi",
+"meaning": "ขอโทษ / เกรงใจ (เบากว่า 对不起)",
+"exZh": "不好意思，请问现在几点？",
+"exTh": "ขอโทษนะคะ ขอถามหน่อยตอนนี้กี่โมงแล้ว"
+},
+{
+"zh": "白天",
+"pinyin": "báitiān",
+"meaning": "ตอนกลางวัน",
+"exZh": "他白天工作，晚上学习。",
+"exTh": "เขาทำงานตอนกลางวัน เรียนตอนกลางคืน"
+},
+{
+"zh": "黑夜",
+"pinyin": "hēiyè",
+"meaning": "ตอนกลางคืน / ยามค่ำคืน",
+"exZh": "黑夜里看不清路。",
+"exTh": "กลางคืนมองเห็นทางไม่ชัด"
+},
+{
+"zh": "才",
+"pinyin": "cái",
+"meaning": "แค่ / เพิ่งจะ / ถึงจะ",
+"exZh": "他努力学习，才考得好。",
+"exTh": "เขาตั้งใจเรียน ถึงจะสอบได้ดี"
+},
+{
+"zh": "脏",
+"pinyin": "zāng",
+"meaning": "สกปรก (ตรงข้าม 干净)",
+"exZh": "你的手太脏了，快去洗。",
+"exTh": "มือเธอสกปรกมาก รีบไปล้างเร็ว"
+},
+{
+"zh": "乱",
+"pinyin": "luàn",
+"meaning": "รก / วุ่นวาย (ตรงข้าม 整齐)",
+"exZh": "他的房间很乱。",
+"exTh": "ห้องของเขารกมาก"
+},
+{
+"zh": "整齐",
+"pinyin": "zhěngqí",
+"meaning": "เป็นระเบียบ / เรียบร้อย",
+"exZh": "书架上的书放得很整齐。",
+"exTh": "หนังสือบนชั้นวางจัดไว้เป็นระเบียบ"
+},
+{
+"zh": "整理",
+"pinyin": "zhěnglǐ",
+"meaning": "จัดระเบียบ / จัดให้เรียบร้อย",
+"exZh": "我每天都整理我的桌子。",
+"exTh": "ฉันจัดโต๊ะให้เรียบร้อยทุกวัน"
+},
+{
+"zh": "原来",
+"pinyin": "yuánlái",
+"meaning": "ที่แท้ (ขึ้นต้นประโยค) / เดิมที",
+"exZh": "原来你早就知道了。",
+"exTh": "ที่แท้เธอก็รู้ตั้งนานแล้ว"
+},
+{
+"zh": "其实",
+"pinyin": "qíshí",
+"meaning": "ที่จริงแล้ว (ใช้กลางประโยค)",
+"exZh": "她看起来很凶，其实很善良。",
+"exTh": "เธอดูดุ แต่ที่จริงใจดีมาก"
+},
+{
+"zh": "感谢",
+"pinyin": "gǎnxiè",
+"meaning": "รู้สึกขอบคุณ / ซาบซึ้ง",
+"exZh": "非常感谢你的帮助。",
+"exTh": "ขอบคุณมากสำหรับความช่วยเหลือ"
+},
+{
+"zh": "糟糕",
+"pinyin": "zāogāo",
+"meaning": "แย่แล้ว / เลวร้าย",
+"exZh": "糟糕，我忘带钱包了。",
+"exTh": "แย่แล้ว ฉันลืมเอากระเป๋าเงินมา"
+},
+{
+"zh": "可是",
+"pinyin": "kěshì",
+"meaning": "แต่ / แต่ว่า",
+"exZh": "我想去，可是没有时间。",
+"exTh": "ฉันอยากไป แต่ไม่มีเวลา"
+},
+{
+"zh": "平时",
+"pinyin": "píngshí",
+"meaning": "ปกติแล้ว / ตามปกติ",
+"exZh": "他平时很少喝酒。",
+"exTh": "ปกติแล้วเขาดื่มเหล้าน้อยมาก"
+},
+{
+"zh": "情趣",
+"pinyin": "qíngqù",
+"meaning": "รสนิยม / อารมณ์สุนทรีย์",
+"exZh": "他们的生活很有情趣。",
+"exTh": "ชีวิตของพวกเขามีรสนิยมและสีสัน"
+},
+{
+"zh": "有趣",
+"pinyin": "yǒuqù",
+"meaning": "น่าสนใจ / สนุก",
+"exZh": "这本书非常有趣。",
+"exTh": "หนังสือเล่มนี้น่าสนใจมาก"
+},
+{
+"zh": "有意思",
+"pinyin": "yǒu yìsi",
+"meaning": "น่าสนใจ / มีความหมาย / ตลกดี",
+"exZh": "这个游戏真有意思。",
+"exTh": "เกมนี้สนุกจริงๆ"
+},
+{
+"zh": "谁",
+"pinyin": "shéi",
+"meaning": "ใคร",
+"exZh": "谁知道答案？",
+"exTh": "ใครรู้คำตอบบ้าง"
+},
+{
+"zh": "谁就",
+"pinyin": "shéi jiù",
+"meaning": "ใครก็ตามที่...ก็จะ (คู่กับ 谁)",
+"exZh": "谁先到，谁就坐这里。",
+"exTh": "ใครมาถึงก่อน คนนั้นก็จะได้นั่งตรงนี้"
+},
+{
+"zh": "要",
+"pinyin": "yào",
+"meaning": "จะ / ต้องการ / ต้อง",
+"exZh": "我要打点滴了，请别动。",
+"exTh": "ฉันจะให้น้ำเกลือแล้ว กรุณาอย่าขยับ"
+},
+{
+"zh": "完全",
+"pinyin": "wánquán",
+"meaning": "โดยสมบูรณ์ / ทั้งหมด",
+"exZh": "关于这个事，我们完全同意。",
+"exTh": "เรื่องนี้เราเห็นด้วยอย่างเต็มที่"
+},
+{
+"zh": "关键",
+"pinyin": "guānjiàn",
+"meaning": "จุดสำคัญ / กุญแจสำคัญ",
+"exZh": "问题的关键是我不能相信你了。",
+"exTh": "จุดสำคัญของปัญหาคือฉันไว้ใจเธอไม่ได้แล้ว"
+},
+{
+"zh": "主要",
+"pinyin": "zhǔyào",
+"meaning": "หลัก / สำคัญที่สุด",
+"exZh": "这本书主要是关于中文的。",
+"exTh": "หนังสือเล่มนี้หลักๆ เกี่ยวกับภาษาจีน"
+},
+{
+"zh": "清楚",
+"pinyin": "qīngchu",
+"meaning": "ชัดเจน",
+"exZh": "我没听清楚，请再说一次。",
+"exTh": "ฉันฟังไม่ชัด กรุณาพูดอีกครั้ง"
+},
+{
+"zh": "困难",
+"pinyin": "kùnnán",
+"meaning": "ความยากลำบาก / อุปสรรค",
+"exZh": "我觉得这个项目有困难。",
+"exTh": "ฉันคิดว่าโปรเจกต์นี้มีอุปสรรค"
+},
+{
+"zh": "由",
+"pinyin": "yóu",
+"meaning": "โดย (ใครเป็นผู้...)",
+"exZh": "我们今天的活动都由他安排。",
+"exTh": "กิจกรรมวันนี้ของเราเขาเป็นคนจัดทั้งหมด"
+},
+{
+"zh": "安排",
+"pinyin": "ānpái",
+"meaning": "จัดการ / จัดเตรียม",
+"exZh": "老板安排我去出差。",
+"exTh": "เจ้านายจัดให้ฉันไปทำงานต่างเมือง"
+},
+{
+"zh": "规定",
+"pinyin": "guīdìng",
+"meaning": "กฎระเบียบ / กำหนด",
+"exZh": "请在规定地点抽烟。",
+"exTh": "กรุณาสูบบุหรี่ในที่ที่กำหนด"
+},
+{
+"zh": "十分",
+"pinyin": "shífēn",
+"meaning": "อย่างยิ่ง / มาก",
+"exZh": "她的身体十分健康。",
+"exTh": "สุขภาพของเธอแข็งแรงมาก"
+},
+{
+"zh": "其中",
+"pinyin": "qízhōng",
+"meaning": "ในจำนวนนั้น / หนึ่งในนั้น",
+"exZh": "我有很多朋友，其中一位是小夏珍。",
+"exTh": "ฉันมีเพื่อนมากมาย หนึ่งในนั้นคือเสี่ยวเซี่ยเจิน"
+},
+{
+"zh": "愉快",
+"pinyin": "yúkuài",
+"meaning": "เบิกบาน / มีความสุข",
+"exZh": "我们曾有很多愉快的回忆。",
+"exTh": "พวกเราเคยมีความทรงจำดีๆ มากมาย"
+},
+{
+"zh": "回忆",
+"pinyin": "huíyì",
+"meaning": "ความทรงจำ / รำลึก",
+"exZh": "这首歌让我想起很多回忆。",
+"exTh": "เพลงนี้ทำให้ฉันนึกถึงความทรงจำมากมาย"
+},
+{
+"zh": "然而",
+"pinyin": "rán'ér",
+"meaning": "อย่างไรก็ตาม / แต่ทว่า",
+"exZh": "我很努力，然而还是失败了。",
+"exTh": "ฉันพยายามมาก แต่ทว่าก็ยังล้มเหลว"
+},
+{
+"zh": "生活",
+"pinyin": "shēnghuó",
+"meaning": "ชีวิต / ดำรงชีวิต",
+"exZh": "这是我生活中最苦的味道。",
+"exTh": "นี่คือรสที่ขมที่สุดในชีวิตของฉัน"
+},
+{
+"zh": "味道",
+"pinyin": "wèidào",
+"meaning": "รสชาติ / กลิ่น",
+"exZh": "这道菜的味道很特别。",
+"exTh": "รสชาติของอาหารจานนี้พิเศษมาก"
+},
+{
+"zh": "偶尔",
+"pinyin": "ǒu'ěr",
+"meaning": "บางครั้ง / นานๆ ครั้ง",
+"exZh": "偶尔，我会为此哭泣。",
+"exTh": "บางครั้งฉันก็ร้องไห้เพราะเรื่องนี้"
+},
+{
+"zh": "反正",
+"pinyin": "fǎnzhèng",
+"meaning": "ยังไงก็ / ถึงอย่างไรก็ตาม",
+"exZh": "反正我已经决定了。",
+"exTh": "ยังไงฉันก็ตัดสินใจแล้ว"
+},
+{
+"zh": "懂",
+"pinyin": "dǒng",
+"meaning": "เข้าใจ / รู้เรื่อง",
+"exZh": "老师讲的我都懂了。",
+"exTh": "ที่อาจารย์สอนฉันเข้าใจหมดแล้ว"
+},
+{
+"zh": "明白",
+"pinyin": "míngbai",
+"meaning": "เข้าใจ / กระจ่าง",
+"exZh": "我明白你的意思了。",
+"exTh": "ฉันเข้าใจความหมายของเธอแล้ว"
+},
+{
+"zh": "了解",
+"pinyin": "liǎojiě",
+"meaning": "เข้าใจ / รู้จัก (อย่างลึกซึ้ง)",
+"exZh": "我很了解他的性格。",
+"exTh": "ฉันเข้าใจนิสัยของเขาดี"
+},
+{
+"zh": "认为",
+"pinyin": "rènwéi",
+"meaning": "คิดว่า / เห็นว่า (เข้าใจและยอมรับ)",
+"exZh": "我认为这个想法很好。",
+"exTh": "ฉันคิดว่าความคิดนี้ดีมาก"
+},
+{
+"zh": "以为",
+"pinyin": "yǐwéi",
+"meaning": "นึกว่า (มักเข้าใจผิด)",
+"exZh": "我以为今天是星期天。",
+"exTh": "ฉันนึกว่าวันนี้เป็นวันอาทิตย์"
+},
+{
+"zh": "考虑",
+"pinyin": "kǎolǜ",
+"meaning": "พิจารณา / ไตร่ตรอง",
+"exZh": "这件事我需要考虑一下。",
+"exTh": "เรื่องนี้ฉันต้องขอพิจารณาก่อน"
+},
+{
+"zh": "知道",
+"pinyin": "zhīdào",
+"meaning": "รู้ / ทราบ",
+"exZh": "我不知道他住在哪里。",
+"exTh": "ฉันไม่รู้ว่าเขาอยู่ที่ไหน"
+},
+{
+"zh": "机会",
+"pinyin": "jīhuì",
+"meaning": "โอกาส",
+"exZh": "这是一个很好的机会。",
+"exTh": "นี่เป็นโอกาสที่ดีมาก"
+},
+{
+"zh": "选择",
+"pinyin": "xuǎnzé",
+"meaning": "เลือก / ตัดสินใจเลือก",
+"exZh": "她选择去中国留学而不是工作。",
+"exTh": "เธอเลือกไปเรียนต่อจีนแทนการทำงาน"
+},
+{
+"zh": "相反",
+"pinyin": "xiāngfǎn",
+"meaning": "ตรงกันข้าม",
+"exZh": "我往相反的方向走了。",
+"exTh": "ฉันเดินไปในทิศทางตรงกันข้าม"
+},
+{
+"zh": "正好",
+"pinyin": "zhènghǎo",
+"meaning": "พอดี / บังเอิญพอดี",
+"exZh": "我的钱正好够买那件衣服。",
+"exTh": "เงินของฉันพอดีสำหรับซื้อเสื้อตัวนั้น"
+},
+{
+"zh": "重复",
+"pinyin": "chóngfù",
+"meaning": "ทำซ้ำ / พูดซ้ำ",
+"exZh": "请不要重复同样的错误。",
+"exTh": "กรุณาอย่าทำผิดซ้ำแบบเดิม"
+},
+{
+"zh": "记",
+"pinyin": "jì",
+"meaning": "จำ / จดบันทึก",
+"exZh": "我记不住这么多生词。",
+"exTh": "ฉันจำคำศัพท์เยอะขนาดนี้ไม่ได้"
+},
+{
+"zh": "生词",
+"pinyin": "shēngcí",
+"meaning": "คำศัพท์ (ใหม่)",
+"exZh": "今天我们学了十个生词。",
+"exTh": "วันนี้เราเรียนคำศัพท์ใหม่สิบคำ"
+},
+{
+"zh": "活泼",
+"pinyin": "huópo",
+"meaning": "มีชีวิตชีวา / ร่าเริง",
+"exZh": "这个孩子很活泼。",
+"exTh": "เด็กคนนี้ร่าเริงมีชีวิตชีวามาก"
+},
+{
+"zh": "马马虎虎",
+"pinyin": "mǎmǎhūhū",
+"meaning": "งั้นๆ / พอใช้ได้ (so-so)",
+"exZh": "我的中文马马虎虎。",
+"exTh": "ภาษาจีนของฉันงั้นๆ พอใช้ได้"
+},
+{
+"zh": "得意",
+"pinyin": "déyì",
+"meaning": "ภาคภูมิใจ / ลำพอง",
+"exZh": "考了第一名，他很得意。",
+"exTh": "สอบได้ที่หนึ่ง เขาภูมิใจมาก"
+},
+{
+"zh": "好笑",
+"pinyin": "hǎoxiào",
+"meaning": "น่าขำ / ตลก",
+"exZh": "他说的笑话很好笑。",
+"exTh": "มุกที่เขาเล่าตลกมาก"
+},
+{
+"zh": "研究",
+"pinyin": "yánjiū",
+"meaning": "วิจัย / ศึกษาค้นคว้า",
+"exZh": "他在大学做科学研究。",
+"exTh": "เขาทำงานวิจัยทางวิทยาศาสตร์ที่มหาวิทยาลัย"
+},
+{
+"zh": "发现",
+"pinyin": "fāxiàn",
+"meaning": "ค้นพบ / พบว่า",
+"exZh": "我发现钱包不见了。",
+"exTh": "ฉันพบว่ากระเป๋าเงินหายไป"
+},
+{
+"zh": "合适",
+"pinyin": "héshì",
+"meaning": "เหมาะสม / พอเหมาะ",
+"exZh": "这件衣服对你很合适。",
+"exTh": "เสื้อตัวนี้เหมาะกับเธอมาก"
+},
+{
+"zh": "适合",
+"pinyin": "shìhé",
+"meaning": "เหมาะกับ / เข้ากันได้",
+"exZh": "这份工作很适合她。",
+"exTh": "งานนี้เหมาะกับเธอมาก"
+},
+{
+"zh": "凉快",
+"pinyin": "liángkuai",
+"meaning": "เย็นสบาย",
+"exZh": "树下很凉快。",
+"exTh": "ใต้ต้นไม้เย็นสบายมาก"
+},
+{
+"zh": "温暖",
+"pinyin": "wēnnuǎn",
+"meaning": "อบอุ่น",
+"exZh": "她的笑容很温暖。",
+"exTh": "รอยยิ้มของเธออบอุ่นมาก"
+},
+{
+"zh": "牙刷",
+"pinyin": "yáshuā",
+"meaning": "แปรงสีฟัน",
+"exZh": "我每天换一次牙刷头。",
+"exTh": "ฉันเปลี่ยนหัวแปรงสีฟันทุกวัน"
+},
+{
+"zh": "各",
+"pinyin": "gè",
+"meaning": "แต่ละ (each)",
+"exZh": "各位请安静一下。",
+"exTh": "ทุกท่านกรุณาเงียบสักครู่"
+},
+{
+"zh": "使用",
+"pinyin": "shǐyòng",
+"meaning": "ใช้ / ใช้งาน",
+"exZh": "请正确使用这台机器。",
+"exTh": "กรุณาใช้เครื่องนี้อย่างถูกต้อง"
+},
+{
+"zh": "反义词",
+"pinyin": "fǎnyìcí",
+"meaning": "คำตรงข้าม / คำที่มีความหมายตรงกันข้าม",
+"exZh": "“大”的反义词是“小”。",
+"exTh": "คำตรงข้ามของ \"ใหญ่\" คือ \"เล็ก\""
+},
+{
+"zh": "冻",
+"pinyin": "dòng",
+"meaning": "แช่แข็ง / หนาวจับขั้ว (เย็นสุด)",
+"exZh": "水冻成了冰。",
+"exTh": "น้ำแข็งตัวกลายเป็นน้ำแข็ง"
+},
+{
+"zh": "冷",
+"pinyin": "lěng",
+"meaning": "หนาว / เย็น",
+"exZh": "今天天气很冷。",
+"exTh": "วันนี้อากาศหนาวมาก"
+},
+{
+"zh": "凉",
+"pinyin": "liáng",
+"meaning": "เย็น (กำลังดี)",
+"exZh": "汤已经凉了。",
+"exTh": "ซุปเย็นแล้ว"
+},
+{
+"zh": "得了",
+"pinyin": "déle",
+"meaning": "ได้ / สำเร็จ (บอกความเป็นไปได้)",
+"exZh": "这么多东西我一个人拿不了。",
+"exTh": "ของเยอะขนาดนี้ฉันคนเดียวถือไม่ไหว"
+},
+{
+"zh": "经常",
+"pinyin": "jīngcháng",
+"meaning": "บ่อยๆ / สม่ำเสมอ",
+"exZh": "我经常在电梯里遇到她。",
+"exTh": "ฉันเจอเธอในลิฟต์บ่อยๆ"
+},
+{
+"zh": "容易",
+"pinyin": "róngyì",
+"meaning": "ง่าย / ทำได้ง่าย (adv)",
+"exZh": "这个问题很容易。",
+"exTh": "ปัญหานี้ง่ายมาก"
+},
+{
+"zh": "简单",
+"pinyin": "jiǎndān",
+"meaning": "ง่าย / เรียบง่าย (adj)",
+"exZh": "做西红柿鸡蛋汤很简单。",
+"exTh": "การทำซุปไข่มะเขือเทศง่ายมาก"
+},
+{
+"zh": "总是",
+"pinyin": "zǒngshì",
+"meaning": "...เสมอ / มักจะเสมอ",
+"exZh": "他总是迟到。",
+"exTh": "เขามาสายเสมอ"
+},
+{
+"zh": "吃不了",
+"pinyin": "chībuliǎo",
+"meaning": "กินไม่หมด / กินไม่ลง",
+"exZh": "这么多菜我吃不了。",
+"exTh": "อาหารเยอะขนาดนี้ฉันกินไม่หมด"
+},
+{
+"zh": "总",
+"pinyin": "zǒng",
+"meaning": "มักจะ / มัก",
+"exZh": "我总喜欢跟她聊天。",
+"exTh": "ฉันมักชอบคุยกับเธอ"
+},
+{
+"zh": "严格",
+"pinyin": "yángé",
+"meaning": "เข้มงวด",
+"exZh": "中国有很严格的法律。",
+"exTh": "จีนมีกฎหมายที่เข้มงวดมาก"
+},
+{
+"zh": "要求",
+"pinyin": "yāoqiú",
+"meaning": "ข้อเรียกร้อง / เรียกร้อง",
+"exZh": "我说她的要求太高。",
+"exTh": "ฉันบอกว่าข้อเรียกร้องของเธอสูงเกินไป"
+},
+{
+"zh": "至少",
+"pinyin": "zhìshǎo",
+"meaning": "อย่างน้อย",
+"exZh": "至少曾经爱过你。",
+"exTh": "อย่างน้อยก็เคยรักเธอ"
+},
+{
+"zh": "幽默",
+"pinyin": "yōumò",
+"meaning": "มีอารมณ์ขัน",
+"exZh": "我喜欢跟她聊天，因为她很幽默。",
+"exTh": "ฉันชอบคุยกับเธอ เพราะเธอมีอารมณ์ขัน"
+},
+{
+"zh": "马虎",
+"pinyin": "mǎhu",
+"meaning": "สะเพร่า / เลินเล่อ",
+"exZh": "他做事马虎，你应该检查一下。",
+"exTh": "เขาทำงานสะเพร่า เธอควรตรวจสอบดู"
+},
+{
+"zh": "骄傲",
+"pinyin": "jiāo'ào",
+"meaning": "ภาคภูมิใจ / หยิ่งยโส",
+"exZh": "他父母感到很骄傲。",
+"exTh": "พ่อแม่ของเขารู้สึกภาคภูมิใจมาก"
+},
+{
+"zh": "代表",
+"pinyin": "dàibiǎo",
+"meaning": "ตัวแทน / เป็นตัวแทน",
+"exZh": "他代表国家参加了比赛。",
+"exTh": "เขาเป็นตัวแทนประเทศเข้าร่วมการแข่งขัน"
+},
+{
+"zh": "不仅",
+"pinyin": "bùjǐn",
+"meaning": "ไม่เพียงแต่ (คู่กับ 而且)",
+"exZh": "这部分不仅词汇量大，而且语法也复杂。",
+"exTh": "ส่วนนี้ไม่เพียงแต่คำศัพท์เยอะ แต่ไวยากรณ์ยังซับซ้อนด้วย"
+},
+{
+"zh": "而且",
+"pinyin": "érqiě",
+"meaning": "อีกทั้ง / ยิ่งไปกว่านั้น",
+"exZh": "她很聪明，而且很努力。",
+"exTh": "เธอฉลาด อีกทั้งยังขยันมาก"
+},
+{
+"zh": "复杂",
+"pinyin": "fùzá",
+"meaning": "ซับซ้อน",
+"exZh": "这个问题很复杂。",
+"exTh": "ปัญหานี้ซับซ้อนมาก"
+},
+{
+"zh": "增加",
+"pinyin": "zēngjiā",
+"meaning": "เพิ่มขึ้น (เชิงนามธรรม)",
+"exZh": "公司增加了员工的工资。",
+"exTh": "บริษัทเพิ่มเงินเดือนให้พนักงาน"
+},
+{
+"zh": "解释",
+"pinyin": "jiěshì",
+"meaning": "อธิบาย / ชี้แจง",
+"exZh": "老师解释了这个语法。",
+"exTh": "อาจารย์อธิบายไวยากรณ์ข้อนี้"
+},
+{
+"zh": "替",
+"pinyin": "tì",
+"meaning": "แทน / ทำแทน",
+"exZh": "他帮我照顾孩子。我替他做饭。",
+"exTh": "เขาช่วยฉันดูแลลูก ฉันทำกับข้าวแทนเขา"
+},
+{
+"zh": "购买",
+"pinyin": "gòumǎi",
+"meaning": "ซื้อ / จัดซื้อ",
+"exZh": "我的钱还不够购买那件衬衫。",
+"exTh": "เงินของฉันยังไม่พอซื้อเสื้อเชิ้ตตัวนั้น"
+},
+{
+"zh": "价",
+"pinyin": "jià",
+"meaning": "ราคา",
+"exZh": "那件衣服是高价的。",
+"exTh": "เสื้อตัวนั้นราคาแพง"
+},
+{
+"zh": "反映",
+"pinyin": "fǎnyìng",
+"meaning": "สะท้อน",
+"exZh": "这部电影反映了城市人的生活。",
+"exTh": "หนังเรื่องนี้สะท้อนชีวิตคนเมือง"
+},
+{
+"zh": "被",
+"pinyin": "bèi",
+"meaning": "ถูก (โครงสร้าง passive)",
+"exZh": "我的汽车被他弄坏了。",
+"exTh": "รถของฉันถูกเขาทำพัง"
+},
+{
+"zh": "另外",
+"pinyin": "lìngwài",
+"meaning": "นอกจากนี้ / อีกอย่าง",
+"exZh": "她很可爱，另外她还很聪明。",
+"exTh": "เธอน่ารัก นอกจากนี้ยังฉลาดอีกด้วย"
+},
+{
+"zh": "吸引",
+"pinyin": "xīyǐn",
+"meaning": "ดึงดูด",
+"exZh": "她深深地吸引了我。",
+"exTh": "เธอดึงดูดฉันอย่างมาก"
+},
+{
+"zh": "特别",
+"pinyin": "tèbié",
+"meaning": "พิเศษ / เป็นพิเศษ",
+"exZh": "这家咖啡的味道很特别。",
+"exTh": "รสกาแฟร้านนี้พิเศษมาก"
+},
+{
+"zh": "制造",
+"pinyin": "zhìzào",
+"meaning": "ผลิต / สร้าง",
+"exZh": "制造电脑往往不简单。",
+"exTh": "การผลิตคอมพิวเตอร์มักไม่ง่าย"
+},
+{
+"zh": "往往",
+"pinyin": "wǎngwǎng",
+"meaning": "มักจะ / บ่อยครั้ง",
+"exZh": "努力的人往往会成功。",
+"exTh": "คนที่ขยันมักจะประสบความสำเร็จ"
+},
+{
+"zh": "烦恼",
+"pinyin": "fánnǎo",
+"meaning": "กังวลใจ / กลุ้มใจ",
+"exZh": "孩子生病让父母很烦恼。",
+"exTh": "ลูกป่วยทำให้พ่อแม่กลุ้มใจมาก"
+},
+{
+"zh": "丰富",
+"pinyin": "fēngfù",
+"meaning": "อุดมสมบูรณ์ / มากมาย",
+"exZh": "他的经验非常丰富。",
+"exTh": "ประสบการณ์ของเขามากมายมาก"
+},
+{
+"zh": "一般",
+"pinyin": "yìbān",
+"meaning": "โดยทั่วไป / ธรรมดา",
+"exZh": "中国人一般不养龙。",
+"exTh": "คนจีนโดยทั่วไปไม่เลี้ยงมังกร"
+},
+{
+"zh": "伤心",
+"pinyin": "shāngxīn",
+"meaning": "เสียใจ",
+"exZh": "听到这个消息，她很伤心。",
+"exTh": "ได้ยินข่าวนี้แล้วเธอเสียใจมาก"
+},
+{
+"zh": "后悔",
+"pinyin": "hòuhuǐ",
+"meaning": "เสียใจภายหลัง / เสียดาย",
+"exZh": "我很后悔没有早点告诉你。",
+"exTh": "ฉันเสียใจที่ไม่ได้บอกเธอเร็วกว่านี้"
+},
+{
+"zh": "可惜",
+"pinyin": "kěxī",
+"meaning": "น่าเสียดาย",
+"exZh": "这么好的机会错过了，真可惜。",
+"exTh": "พลาดโอกาสดีๆ แบบนี้ น่าเสียดายจริงๆ"
+},
+{
+"zh": "可怜",
+"pinyin": "kělián",
+"meaning": "น่าสงสาร",
+"exZh": "那只流浪狗很可怜。",
+"exTh": "หมาจรจัดตัวนั้นน่าสงสารมาก"
+},
+{
+"zh": "任何",
+"pinyin": "rènhé",
+"meaning": "ใดๆ / อันใดก็ตาม",
+"exZh": "如果你有任何信息，请告诉我。",
+"exTh": "ถ้าเธอมีข้อมูลใดๆ กรุณาบอกฉัน"
+},
+{
+"zh": "详细",
+"pinyin": "xiángxì",
+"meaning": "ละเอียด",
+"exZh": "请详细地告诉我。",
+"exTh": "กรุณาบอกฉันอย่างละเอียด"
+},
+{
+"zh": "总结",
+"pinyin": "zǒngjié",
+"meaning": "สรุป",
+"exZh": "说来话长，我来给你总结一下。",
+"exTh": "พูดยาวเลย เดี๋ยวฉันสรุปให้ฟัง"
+},
+{
+"zh": "并",
+"pinyin": "bìng",
+"meaning": "และ / อีกทั้ง (คำเชื่อม)",
+"exZh": "别忘记联系我，并好好照顾自己。",
+"exTh": "อย่าลืมติดต่อฉัน และดูแลตัวเองด้วย"
+},
+{
+"zh": "联系",
+"pinyin": "liánxì",
+"meaning": "ติดต่อ",
+"exZh": "有问题随时联系我。",
+"exTh": "มีปัญหาติดต่อฉันได้ตลอด"
+},
+{
+"zh": "即使",
+"pinyin": "jíshǐ",
+"meaning": "แม้ว่า / ถึงแม้ (คู่กับ 也)",
+"exZh": "即使你很忙，也要给我打电话。",
+"exTh": "ถึงแม้เธอจะยุ่ง ก็ต้องโทรหาฉัน"
+},
+{
+"zh": "也",
+"pinyin": "yě",
+"meaning": "ก็ / ก็...เหมือนกัน",
+"exZh": "即使你很忙，你也要给我打电话。",
+"exTh": "ถึงเธอจะยุ่ง เธอก็ต้องโทรหาฉัน"
+},
+{
+"zh": "重视",
+"pinyin": "zhòngshì",
+"meaning": "ให้ความสำคัญ",
+"exZh": "如果你不重视我的需求，我就生气了。",
+"exTh": "ถ้าเธอไม่ให้ความสำคัญกับความต้องการของฉัน ฉันจะโกรธ"
+},
+{
+"zh": "发脾气",
+"pinyin": "fā píqì",
+"meaning": "อารมณ์เสีย / โมโห",
+"exZh": "他常常对孩子发脾气。",
+"exTh": "เขามักจะโมโหใส่ลูกบ่อยๆ"
+},
+{
+"zh": "所有",
+"pinyin": "suǒyǒu",
+"meaning": "ทั้งหมด / ทุกอย่าง",
+"exZh": "你得到我所有的爱。",
+"exTh": "เธอได้รับความรักทั้งหมดของฉัน"
+},
+{
+"zh": "批评",
+"pinyin": "pīpíng",
+"meaning": "ตำหนิ / วิจารณ์",
+"exZh": "老板经常批评他。",
+"exTh": "เจ้านายตำหนิเขาบ่อยๆ"
+},
+{
+"zh": "缺少",
+"pinyin": "quēshǎo",
+"meaning": "ขาด / ขาดแคลน",
+"exZh": "批评让他缺少信心。",
+"exTh": "การถูกตำหนิทำให้เขาขาดความมั่นใจ"
+},
+{
+"zh": "好处",
+"pinyin": "hǎochù",
+"meaning": "ข้อดี / ประโยชน์",
+"exZh": "牛奶有很多好处。",
+"exTh": "นมมีประโยชน์มากมาย"
+},
+{
+"zh": "引起",
+"pinyin": "yǐnqǐ",
+"meaning": "ก่อให้เกิด / ทำให้เกิด",
+"exZh": "这件事引起了妈妈的担心。",
+"exTh": "เรื่องนี้ทำให้แม่เป็นกังวล"
+},
+{
+"zh": "招聘",
+"pinyin": "zhāopìn",
+"meaning": "รับสมัคร (พนักงาน)",
+"exZh": "哪家医院正在招聘护士？",
+"exTh": "โรงพยาบาลไหนกำลังรับสมัครพยาบาล"
+},
+{
+"zh": "通过",
+"pinyin": "tōngguò",
+"meaning": "ผ่าน / ผ่านทาง",
+"exZh": "你必须通过微信给我打电话。",
+"exTh": "เธอต้องโทรหาฉันผ่านทางวีแชท"
+},
+{
+"zh": "得到",
+"pinyin": "dédào",
+"meaning": "ได้รับ",
+"exZh": "你得到我所有的爱。",
+"exTh": "เธอได้รับความรักทั้งหมดของฉัน"
+},
+{
+"zh": "不停地",
+"pinyin": "bùtíng de",
+"meaning": "อย่างไม่หยุด",
+"exZh": "我和她一起不停地聊天。",
+"exTh": "ฉันกับเธอคุยกันอย่างไม่หยุด"
+},
+{
+"zh": "实际上",
+"pinyin": "shíjì shàng",
+"meaning": "ที่จริงแล้ว / ในความเป็นจริง",
+"exZh": "实际上，中国车很好用。",
+"exTh": "ที่จริงแล้วรถจีนใช้ดีมาก"
+},
+{
+"zh": "情况",
+"pinyin": "qíngkuàng",
+"meaning": "สถานการณ์ / สภาพการณ์",
+"exZh": "情况不太好。",
+"exTh": "สถานการณ์ไม่ค่อยดี"
+},
+{
+"zh": "条件",
+"pinyin": "tiáojiàn",
+"meaning": "เงื่อนไข",
+"exZh": "根据这些条件，你可以退款。",
+"exTh": "ตามเงื่อนไขเหล่านี้ เธอขอคืนเงินได้"
+},
+{
+"zh": "因此",
+"pinyin": "yīncǐ",
+"meaning": "ดังนั้น / เพราะฉะนั้น",
+"exZh": "我想考过HSK4，因此我会坚持学习。",
+"exTh": "ฉันอยากสอบผ่าน HSK4 ดังนั้นฉันจะเรียนอย่างต่อเนื่อง"
+},
+{
+"zh": "坚持",
+"pinyin": "jiānchí",
+"meaning": "ยืนหยัด / ทำอย่างต่อเนื่อง",
+"exZh": "我今年会坚持学习汉语。",
+"exTh": "ปีนี้ฉันจะเรียนภาษาจีนอย่างต่อเนื่อง"
+},
+{
+"zh": "而不是",
+"pinyin": "ér bùshì",
+"meaning": "ไม่ใช่ / แทนที่จะเป็น",
+"exZh": "她选择留学而不是工作。",
+"exTh": "เธอเลือกเรียนต่อแทนที่จะทำงาน"
+},
+{
+"zh": "极其",
+"pinyin": "jíqí",
+"meaning": "อย่างที่สุด / สุดๆ",
+"exZh": "这让她妈妈极其得意。",
+"exTh": "สิ่งนี้ทำให้แม่ของเธอภูมิใจสุดๆ"
+},
+{
+"zh": "退款",
+"pinyin": "tuìkuǎn",
+"meaning": "คืนเงิน",
+"exZh": "根据条件，你可以退款。",
+"exTh": "ตามเงื่อนไข เธอขอคืนเงินได้"
+},
+{
+"zh": "之一",
+"pinyin": "zhī yī",
+"meaning": "หนึ่งใน...",
+"exZh": "黄金是价格高的物品之一。",
+"exTh": "ทองคำเป็นหนึ่งในสิ่งของที่ราคาแพง"
+},
+{
+"zh": "原因",
+"pinyin": "yuányīn",
+"meaning": "สาเหตุ / เหตุผล",
+"exZh": "我购买电动车的原因是它很省钱。",
+"exTh": "เหตุผลที่ฉันซื้อรถไฟฟ้าคือมันประหยัดเงิน"
+},
+{
+"zh": "并且",
+"pinyin": "bìngqiě",
+"meaning": "อีกทั้ง / และยัง",
+"exZh": "它很容易用，并且对环境好。",
+"exTh": "มันใช้ง่าย และยังดีต่อสิ่งแวดล้อมด้วย"
+},
+{
+"zh": "提醒",
+"pinyin": "tíxǐng",
+"meaning": "เตือน",
+"exZh": "妈妈提醒孩子睡前要刷牙。",
+"exTh": "แม่เตือนลูกว่าก่อนนอนต้องแปรงฟัน"
+},
+{
+"zh": "之前",
+"pinyin": "zhīqián",
+"meaning": "ก่อน / ก่อนหน้า",
+"exZh": "睡之前需要刷牙。",
+"exTh": "ก่อนนอนต้องแปรงฟัน"
+},
+{
+"zh": "仔细",
+"pinyin": "zǐxì",
+"meaning": "ละเอียดรอบคอบ",
+"exZh": "睡前需要仔细刷牙。",
+"exTh": "ก่อนนอนต้องแปรงฟันอย่างละเอียด"
+},
+{
+"zh": "否则",
+"pinyin": "fǒuzé",
+"meaning": "มิฉะนั้น / ไม่อย่างนั้น",
+"exZh": "要刷牙，否则就牙疼。",
+"exTh": "ต้องแปรงฟัน ไม่อย่างนั้นจะปวดฟัน"
+},
+{
+"zh": "互相",
+"pinyin": "hùxiāng",
+"meaning": "ซึ่งกันและกัน",
+"exZh": "好的同事应该互相帮助。",
+"exTh": "เพื่อนร่วมงานที่ดีควรช่วยเหลือกัน"
+},
+{
+"zh": "之间",
+"pinyin": "zhī jiān",
+"meaning": "ระหว่าง",
+"exZh": "我在六点到八点之间起床。",
+"exTh": "ฉันตื่นนอนระหว่างหกถึงแปดโมง"
+},
+{
+"zh": "想法",
+"pinyin": "xiǎngfǎ",
+"meaning": "ความคิด / มุมมอง",
+"exZh": "根据你的想法，生活是什么？",
+"exTh": "ตามความคิดของเธอ ชีวิตคืออะไร"
+},
+{
+"zh": "使",
+"pinyin": "shǐ",
+"meaning": "ทำให้ / ส่งผลให้",
+"exZh": "她的特点使她的朋友越来越多。",
+"exTh": "จุดเด่นของเธอทำให้เธอมีเพื่อนมากขึ้นเรื่อยๆ"
+},
+{
+"zh": "取得",
+"pinyin": "qǔdé",
+"meaning": "ได้รับ / บรรลุ",
+"exZh": "他的想法取得了老板的认可。",
+"exTh": "ความคิดของเขาได้รับการยอมรับจากเจ้านาย"
+},
+{
+"zh": "优秀",
+"pinyin": "yōuxiù",
+"meaning": "ยอดเยี่ยม / ดีเด่น",
+"exZh": "那名护士的能力很优秀。",
+"exTh": "ความสามารถของพยาบาลคนนั้นยอดเยี่ยมมาก"
+},
+{
+"zh": "当时",
+"pinyin": "dāngshí",
+"meaning": "ตอนนั้น / ในขณะนั้น",
+"exZh": "当时他帮我照顾女朋友。",
+"exTh": "ตอนนั้นเขาช่วยฉันดูแลแฟน"
+},
+{
+"zh": "吃惊",
+"pinyin": "chījīng",
+"meaning": "ตกใจ / ประหลาดใจ",
+"exZh": "我并不感到吃惊。",
+"exTh": "ฉันไม่ได้รู้สึกประหลาดใจเลย"
+},
+{
+"zh": "成熟",
+"pinyin": "chéngshú",
+"meaning": "เป็นผู้ใหญ่ / สุกงอม",
+"exZh": "我发现变得成熟真难。",
+"exTh": "ฉันพบว่าการเป็นผู้ใหญ่นั้นยากจริงๆ"
+},
+{
+"zh": "随着",
+"pinyin": "suízhe",
+"meaning": "ตามไปกับ / เมื่อ...",
+"exZh": "随着人口的增长，温度越来越高。",
+"exTh": "เมื่อประชากรเพิ่มขึ้น อุณหภูมิก็สูงขึ้นเรื่อยๆ"
+},
+{
+"zh": "增长",
+"pinyin": "zēngzhǎng",
+"meaning": "เติบโต / เพิ่มขึ้น",
+"exZh": "人口的增长很快。",
+"exTh": "ประชากรเพิ่มขึ้นอย่างรวดเร็ว"
+},
+{
+"zh": "一…就",
+"pinyin": "yī…jiù",
+"meaning": "พอ...ก็ทันที",
+"exZh": "我一躺到床上就睡觉。",
+"exTh": "พอฉันล้มตัวลงเตียงก็หลับทันที"
+},
+{
+"zh": "雨伞",
+"pinyin": "yǔsǎn",
+"meaning": "ร่ม 🌂",
+"exZh": "下雨了，别忘了带雨伞。",
+"exTh": "ฝนตกแล้ว อย่าลืมเอาร่มไปด้วย"
+},
+{
+"zh": "鲨鱼",
+"pinyin": "shāyú",
+"meaning": "ฉลาม 🦈",
+"exZh": "鲨鱼是海里的危险动物。",
+"exTh": "ฉลามเป็นสัตว์อันตรายในทะเล"
+},
+{
+"zh": "鲸鱼",
+"pinyin": "jīngyú",
+"meaning": "วาฬ 🐳",
+"exZh": "鲸鱼是世界上最大的动物。",
+"exTh": "วาฬเป็นสัตว์ที่ใหญ่ที่สุดในโลก"
+},
+{
+"zh": "出色",
+"pinyin": "chūsè",
+"meaning": "โดดเด่น / ยอดเยี่ยม",
+"exZh": "他的表现非常出色。",
+"exTh": "ผลงานของเขาโดดเด่นมาก"
+},
+{
+"zh": "突出",
+"pinyin": "tūchū",
+"meaning": "โดดเด่น / เด่นชัด",
+"exZh": "她的能力很突出。",
+"exTh": "ความสามารถของเธอโดดเด่นมาก"
+},
+{
+"zh": "恢复",
+"pinyin": "huīfù",
+"meaning": "ฟื้นตัว / หายป่วย / กลับคืน",
+"exZh": "他的身体逐渐恢复了。",
+"exTh": "ร่างกายของเขาค่อยๆ ฟื้นตัว"
+},
+{
+"zh": "着急",
+"pinyin": "zháojí",
+"meaning": "ร้อนใจ / รีบร้อน / กังวล",
+"exZh": "别着急，慢慢来。",
+"exTh": "อย่าร้อนใจ ค่อยๆ ทำ"
+},
+{
+"zh": "劝",
+"pinyin": "quàn",
+"meaning": "โน้มน้าว / เกลี้ยกล่อม",
+"exZh": "我劝他不要放弃。",
+"exTh": "ฉันโน้มน้าวให้เขาอย่ายอมแพ้"
+},
+{
+"zh": "反对",
+"pinyin": "fǎnduì",
+"meaning": "คัดค้าน / ต่อต้าน",
+"exZh": "我反对这个计划。",
+"exTh": "ฉันคัดค้านแผนการนี้"
+},
+{
+"zh": "意见",
+"pinyin": "yìjiàn",
+"meaning": "ความคิดเห็น",
+"exZh": "你对这件事有什么意见？",
+"exTh": "เธอมีความคิดเห็นอย่างไรกับเรื่องนี้"
+},
+{
+"zh": "无论",
+"pinyin": "wúlùn",
+"meaning": "ไม่ว่า...ก็ตาม (คู่กับ 都)",
+"exZh": "无论你的爱是不是真的，你们都不可以结婚。",
+"exTh": "ไม่ว่าความรักของเธอจะจริงหรือไม่ พวกเธอก็แต่งงานกันไม่ได้"
+},
+{
+"zh": "真正",
+"pinyin": "zhēnzhèng",
+"meaning": "แท้จริง / ของจริง",
+"exZh": "这才是真正的友谊。",
+"exTh": "นี่แหละคือมิตรภาพที่แท้จริง"
+},
+{
+"zh": "都",
+"pinyin": "dōu",
+"meaning": "ทั้งหมด / ล้วน / ก็",
+"exZh": "我们都同意这个决定。",
+"exTh": "พวกเราทุกคนเห็นด้วยกับการตัดสินใจนี้"
+},
+{
+"zh": "看清",
+"pinyin": "kànqīng",
+"meaning": "มองเห็นชัด",
+"exZh": "你可以看清黑板上的字吗？",
+"exTh": "เธอมองเห็นตัวอักษรบนกระดานชัดไหม"
+},
+{
+"zh": "镜子",
+"pinyin": "jìngzi",
+"meaning": "กระจก",
+"exZh": "镜子里出现了别人的影子。",
+"exTh": "ในกระจกปรากฏเงาของคนอื่น"
+},
+{
+"zh": "出现",
+"pinyin": "chūxiàn",
+"meaning": "ปรากฏ / โผล่ขึ้นมา",
+"exZh": "问题突然出现了。",
+"exTh": "ปัญหาโผล่ขึ้นมากะทันหัน"
+},
+{
+"zh": "挺…的",
+"pinyin": "tǐng…de",
+"meaning": "ค่อนข้าง...ทีเดียว",
+"exZh": "这件事挺可怕的。",
+"exTh": "เรื่องนี้ค่อนข้างน่ากลัวทีเดียว"
+},
+{
+"zh": "直到",
+"pinyin": "zhídào",
+"meaning": "จนกระทั่ง",
+"exZh": "它吸引了很多观众，直到成为票房第二高。",
+"exTh": "มันดึงดูดผู้ชมมากมาย จนกระทั่งกลายเป็นหนังทำเงินอันดับสอง"
+},
+{
+"zh": "确实",
+"pinyin": "quèshí",
+"meaning": "แท้จริง / อย่างแน่นอน",
+"exZh": "它确实是票房第二高的电影。",
+"exTh": "มันเป็นหนังทำเงินอันดับสองจริงๆ"
+},
+{
+"zh": "误会",
+"pinyin": "wùhuì",
+"meaning": "เข้าใจผิด",
+"exZh": "她误会我了。",
+"exTh": "เธอเข้าใจฉันผิด"
+},
+{
+"zh": "支持",
+"pinyin": "zhīchí",
+"meaning": "สนับสนุน",
+"exZh": "我一直都在支持她。",
+"exTh": "ฉันสนับสนุนเธอมาตลอด"
+},
+{
+"zh": "座位",
+"pinyin": "zuòwèi",
+"meaning": "ที่นั่ง",
+"exZh": "请问这个座位有人吗？",
+"exTh": "ขอถามหน่อย ที่นั่งนี้มีคนนั่งไหม"
+},
+{
+"zh": "竞争",
+"pinyin": "jìngzhēng",
+"meaning": "การแข่งขัน",
+"exZh": "咖啡店市场竞争非常激烈。",
+"exTh": "ตลาดร้านกาแฟมีการแข่งขันที่ดุเดือดมาก"
+},
+{
+"zh": "激烈",
+"pinyin": "jīliè",
+"meaning": "ดุเดือด / รุนแรง",
+"exZh": "比赛非常激烈。",
+"exTh": "การแข่งขันดุเดือดมาก"
+},
+{
+"zh": "制定",
+"pinyin": "zhìdìng",
+"meaning": "กำหนด / วางแผน (จัดทำ)",
+"exZh": "店主需要制定发展计划。",
+"exTh": "เจ้าของร้านต้องวางแผนพัฒนา"
+},
+{
+"zh": "店铺",
+"pinyin": "diànpù",
+"meaning": "ร้านค้า",
+"exZh": "这条街上有很多店铺。",
+"exTh": "ถนนสายนี้มีร้านค้ามากมาย"
+},
+{
+"zh": "发展",
+"pinyin": "fāzhǎn",
+"meaning": "พัฒนา / เติบโต",
+"exZh": "店主需要制定店铺发展计划。",
+"exTh": "เจ้าของร้านต้องวางแผนพัฒนาร้าน"
+},
+{
+"zh": "计划",
+"pinyin": "jìhuà",
+"meaning": "แผนการ / วางแผน",
+"exZh": "我们需要一个发展计划。",
+"exTh": "เราต้องมีแผนการพัฒนา"
+},
+{
+"zh": "相同",
+"pinyin": "xiāngtóng",
+"meaning": "เหมือนกัน",
+"exZh": "你的说法和他的完全相同。",
+"exTh": "คำพูดของเธอกับของเขาเหมือนกันทุกอย่าง"
+},
+{
+"zh": "事实",
+"pinyin": "shìshí",
+"meaning": "ข้อเท็จจริง / ความจริง",
+"exZh": "你们的说法符合事实。",
+"exTh": "คำพูดของพวกเธอตรงกับความจริง"
+},
+{
+"zh": "积累",
+"pinyin": "jīlěi",
+"meaning": "สั่งสม / สะสม",
+"exZh": "他花了很长时间积累知识。",
+"exTh": "เขาใช้เวลานานในการสั่งสมความรู้"
+},
+{
+"zh": "市场",
+"pinyin": "shìchǎng",
+"meaning": "ตลาด",
+"exZh": "现在黄金市场很危险。",
+"exTh": "ตอนนี้ตลาดทองคำอันตรายมาก"
+},
+{
+"zh": "缺点",
+"pinyin": "quēdiǎn",
+"meaning": "ข้อเสีย / จุดด้อย",
+"exZh": "虽然他很优秀，但也有缺点。",
+"exTh": "แม้เขาจะยอดเยี่ยม แต่ก็มีข้อเสีย"
+},
+{
+"zh": "尊重",
+"pinyin": "zūnzhòng",
+"meaning": "เคารพ / ให้เกียรติ",
+"exZh": "我非常尊重我的老师。",
+"exTh": "ฉันเคารพอาจารย์ของฉันมาก"
+},
+{
+"zh": "原谅",
+"pinyin": "yuánliàng",
+"meaning": "ให้อภัย",
+"exZh": "我对她做错了，她原谅了我。",
+"exTh": "ฉันทำผิดต่อเธอ เธอให้อภัยฉัน"
+},
+{
+"zh": "鼓掌",
+"pinyin": "gǔzhǎng",
+"meaning": "ปรบมือ",
+"exZh": "现在让我们一起鼓掌祝贺他！",
+"exTh": "ตอนนี้พวกเรามาปรบมือแสดงความยินดีกับเขากันเถอะ"
+},
+{
+"zh": "祝贺",
+"pinyin": "zhùhè",
+"meaning": "แสดงความยินดี",
+"exZh": "祝贺你通过了考试！",
+"exTh": "ยินดีด้วยที่เธอสอบผ่าน"
+},
+{
+"zh": "表扬",
+"pinyin": "biǎoyáng",
+"meaning": "ชมเชย / ยกย่อง",
+"exZh": "小刘受到了老板的表扬。",
+"exTh": "เสี่ยวหลิวได้รับคำชมจากเจ้านาย"
+},
+{
+"zh": "精彩",
+"pinyin": "jīngcǎi",
+"meaning": "ยอดเยี่ยม / น่าตื่นเต้น",
+"exZh": "听说这次演出很精彩。",
+"exTh": "ได้ยินว่าการแสดงครั้งนี้ยอดเยี่ยมมาก"
+},
+{
+"zh": "调查",
+"pinyin": "diàochá",
+"meaning": "สำรวจ / สอบสวน",
+"exZh": "就按照这个计划去做市场调查吧。",
+"exTh": "ทำการสำรวจตลาดตามแผนนี้เลย"
+},
+{
+"zh": "尽管",
+"pinyin": "jǐnguǎn",
+"meaning": "ถึงแม้ว่า",
+"exZh": "尽管她很害怕打针，不过她没有哭。",
+"exTh": "ถึงแม้เธอจะกลัวฉีดยามาก แต่เธอก็ไม่ร้องไห้"
+},
+{
+"zh": "大夫",
+"pinyin": "dàifu",
+"meaning": "หมอ (= 医生)",
+"exZh": "大夫给她打了一针。",
+"exTh": "หมอฉีดยาให้เธอหนึ่งเข็ม"
+},
+{
+"zh": "暖和",
+"pinyin": "nuǎnhuo",
+"meaning": "อบอุ่น (อากาศ)",
+"exZh": "今天的阳光多好啊，很暖和。",
+"exTh": "แดดวันนี้ดีจัง อบอุ่นมาก"
+},
+{
+"zh": "熟悉",
+"pinyin": "shúxī",
+"meaning": "คุ้นเคย",
+"exZh": "我们没说过话，只是看着很熟悉。",
+"exTh": "เราไม่เคยคุยกัน แค่มองดูแล้วรู้สึกคุ้นเคย"
+},
+{
+"zh": "保证",
+"pinyin": "bǎozhèng",
+"meaning": "รับประกัน / รับรอง",
+"exZh": "我保证你一次就能学会。",
+"exTh": "ฉันรับประกันว่าเธอเรียนครั้งเดียวก็ทำเป็น"
+},
+{
+"zh": "著名",
+"pinyin": "zhùmíng",
+"meaning": "มีชื่อเสียง / โด่งดัง",
+"exZh": "他是世界上最著名的篮球运动员。",
+"exTh": "เขาเป็นนักบาสที่มีชื่อเสียงที่สุดในโลก"
+},
+{
+"zh": "矮",
+"pinyin": "ǎi",
+"meaning": "เตี้ย (ตรงข้าม 高)",
+"exZh": "他个子很矮，但篮球打得很好。",
+"exTh": "เขาตัวเตี้ย แต่เล่นบาสเก่งมาก"
+},
+{
+"zh": "篮球",
+"pinyin": "lánqiú",
+"meaning": "บาสเกตบอล",
+"exZh": "他很喜欢打篮球。",
+"exTh": "เขาชอบเล่นบาสเกตบอลมาก"
+}
+];
+let vocab = [...allVocab];
+let order = [...Array(vocab.length).keys()];
+let current = 0;
+let flipped = false;
+function charClass(zh){
+  const len = [...zh].length;
+  if(len >= 6) return 'zh-char xlong';
+  if(len >= 4) return 'zh-char long';
+  return 'zh-char';
+}
+function renderCard(){
+  if(vocab.length === 0){
+    document.getElementById('frontChar').textContent = '—';
+    document.getElementById('frontChar').className='zh-char';
+    document.getElementById('counter').textContent = 'ไม่พบคำศัพท์';
+    document.getElementById('progressBar').style.width = '0%';
+    document.getElementById('backFace').innerHTML='';
+    return;
+  }
+  const v = vocab[order[current]];
+  flipped = false;
+  document.getElementById('card').classList.remove('flipped');
+  const fc = document.getElementById('frontChar');
+  fc.textContent = v.zh;
+  fc.className = charClass(v.zh);
+  document.getElementById('backFace').innerHTML =
+    '<div class="pinyin">'+v.pinyin+'</div>'+
+    '<div class="meaning">'+v.meaning+'</div>'+
+    '<div class="divider"></div>'+
+    '<div class="example-label">ประโยคตัวอย่าง</div>'+
+    '<div class="example-zh">'+v.exZh+'</div>'+
+    '<div class="example-th">'+v.exTh+'</div>';
+  const pct = ((current+1)/vocab.length)*100;
+  document.getElementById('progressBar').style.width = pct+'%';
+  document.getElementById('counter').textContent = (current+1)+' / '+vocab.length;
+}
+function flipCard(){
+  if(vocab.length===0) return;
+  flipped = !flipped;
+  document.getElementById('card').classList.toggle('flipped', flipped);
+}
+function nextCard(){ if(vocab.length===0)return; current = (current+1)%vocab.length; renderCard(); }
+function prevCard(){ if(vocab.length===0)return; current = (current-1+vocab.length)%vocab.length; renderCard(); }
+function shuffleCards(){
+  for(let i=order.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[order[i],order[j]]=[order[j],order[i]];}
+  current=0; renderCard();
+}
+document.getElementById('search').addEventListener('input', function(e){
+  const q = e.target.value.trim().toLowerCase();
+  if(q===''){ vocab=[...allVocab]; }
+  else{
+    vocab = allVocab.filter(v =>
+      v.zh.toLowerCase().includes(q) ||
+      v.pinyin.toLowerCase().includes(q) ||
+      v.meaning.toLowerCase().includes(q)
+    );
+  }
+  order=[...Array(vocab.length).keys()];
+  current=0; renderCard();
+});
+document.addEventListener('keydown', e=>{
+  if(e.key==='ArrowRight')nextCard();
+  else if(e.key==='ArrowLeft')prevCard();
+  else if(e.key===' '||e.key==='Enter'){e.preventDefault();flipCard();}
+});
+renderCard();
+</script>
+</body>
+</html>
