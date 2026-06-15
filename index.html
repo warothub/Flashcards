@@ -6,12 +6,20 @@
 <title>中文词汇 Flashcards</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;700;900&family=Noto+Sans+Thai:wght@300;400;600&family=Ma+Shan+Zheng&display=swap');
-  :root{--ink:#1a1208;--paper:#f5efe0;--paper2:#ede3cc;--red:#c0392b;--gold:#b8860b;--accent:#8b4513;--light:#faf6ed;}
+  :root{--ink:#1a1208;--paper:#f5efe0;--paper2:#ede3cc;--red:#c0392b;--gold:#b8860b;--accent:#8b4513;--light:#faf6ed;--green:#3a7d44;--greenbg:#dcefdf;--redbg:#f8d7da;}
   *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
   body{background-color:var(--paper);background-image:repeating-linear-gradient(0deg,transparent,transparent 39px,rgba(180,160,100,0.15) 39px,rgba(180,160,100,0.15) 40px),repeating-linear-gradient(90deg,transparent,transparent 39px,rgba(180,160,100,0.08) 39px,rgba(180,160,100,0.08) 40px);min-height:100vh;font-family:'Noto Sans Thai',sans-serif;display:flex;flex-direction:column;align-items:center;padding:16px 14px 40px;overflow-x:hidden;}
-  header{text-align:center;margin-bottom:14px;width:100%;}
+  header{text-align:center;margin-bottom:12px;width:100%;}
   .title-zh{font-family:'Ma Shan Zheng',cursive;font-size:1.8rem;color:var(--red);line-height:1;letter-spacing:0.1em;}
   .title-th{font-size:0.75rem;color:var(--accent);letter-spacing:0.05em;margin-top:3px;opacity:0.8;}
+
+  /* TABS */
+  .tabs{display:flex;gap:8px;width:100%;max-width:400px;margin-bottom:14px;}
+  .tab{flex:1;padding:11px 0;border-radius:10px;border:1.5px solid rgba(139,69,19,0.22);background:var(--light);color:var(--accent);font-family:'Noto Sans Thai',sans-serif;font-size:0.85rem;font-weight:600;cursor:pointer;transition:all .2s;}
+  .tab.active{background:var(--red);color:#fff;border-color:var(--red);box-shadow:0 4px 12px rgba(192,57,43,.25);}
+  .tab:active{transform:scale(.97);}
+
+  /* FLASHCARD VIEW */
   .controls{width:100%;max-width:400px;display:flex;gap:8px;margin-bottom:10px;}
   .search{flex:1;padding:10px 14px;border-radius:10px;border:1.5px solid rgba(139,69,19,0.22);background:var(--light);font-family:'Noto Sans Thai',sans-serif;font-size:0.85rem;color:var(--ink);outline:none;}
   .search:focus{border-color:var(--red);}
@@ -44,6 +52,48 @@
   .btn-prev:active{background:#e0d4b8;}.btn-next:active{background:#a93226;}
   .btn-shuffle{background:none;border:1.5px solid rgba(139,69,19,0.25);color:var(--accent);padding:10px 18px;border-radius:10px;font-size:0.75rem;cursor:pointer;font-family:'Noto Sans Thai',sans-serif;margin-top:12px;transition:all 0.18s;}
   .btn-shuffle:active{background:var(--paper2);transform:scale(0.96);}
+
+  /* QUIZ VIEW */
+  #quizView{width:100%;max-width:400px;display:flex;flex-direction:column;align-items:center;}
+  .quiz-box{width:100%;background:var(--light);border:1.5px solid rgba(139,69,19,.18);border-radius:16px;padding:26px 22px;text-align:center;box-shadow:0 8px 24px rgba(139,69,19,0.1);}
+  .quiz-intro-title{font-family:'Noto Serif SC',serif;font-size:1.25rem;color:var(--red);margin-bottom:10px;font-weight:700;}
+  .quiz-intro-desc{font-size:0.85rem;color:var(--ink);opacity:.85;margin-bottom:22px;line-height:1.7;}
+  .btn-start-quiz{background:var(--red);color:#fff;border:none;padding:14px 30px;border-radius:12px;font-family:'Noto Sans Thai',sans-serif;font-size:0.9rem;font-weight:600;cursor:pointer;box-shadow:0 4px 12px rgba(192,57,43,.3);}
+  .btn-start-quiz:active{transform:scale(.96);background:#a93226;}
+
+  .quiz-progress-wrap{width:100%;background:var(--paper2);border-radius:99px;height:6px;margin-bottom:8px;overflow:hidden;border:1px solid rgba(139,69,19,0.2);}
+  .quiz-progress-bar{height:100%;background:linear-gradient(90deg,var(--red),var(--gold));border-radius:99px;transition:width .3s;}
+  .quiz-counter{font-size:0.75rem;color:var(--accent);text-align:center;margin-bottom:14px;letter-spacing:0.05em;}
+
+  .quiz-type-label{font-size:0.62rem;letter-spacing:.14em;color:var(--gold);text-transform:uppercase;margin-bottom:14px;font-weight:700;}
+  .quiz-question-zh{font-family:'Ma Shan Zheng',cursive;font-size:3rem;color:var(--ink);margin-bottom:6px;}
+  .quiz-question-pinyin{font-family:'Noto Serif SC',serif;font-size:1.05rem;color:var(--red);margin-bottom:18px;}
+  .quiz-sentence{font-family:'Noto Serif SC',serif;font-size:1.2rem;color:var(--ink);line-height:2;margin-bottom:18px;}
+  .quiz-sentence .blank{color:var(--red);font-weight:700;letter-spacing:2px;}
+  .quiz-options{display:flex;flex-direction:column;gap:10px;}
+  .quiz-option{padding:13px 16px;border-radius:10px;border:1.5px solid rgba(139,69,19,0.22);background:var(--paper2);font-family:'Noto Sans Thai',sans-serif;font-size:0.88rem;color:var(--ink);text-align:center;cursor:pointer;transition:all .15s;}
+  .quiz-option.zh-option{font-family:'Noto Serif SC',serif;font-size:1.15rem;}
+  .quiz-option:active{transform:scale(.98);}
+  .quiz-option.correct{background:var(--greenbg);border-color:var(--green);color:var(--green);font-weight:700;}
+  .quiz-option.wrong{background:var(--redbg);border-color:var(--red);color:var(--red);font-weight:700;}
+  .quiz-option.disabled{cursor:default;}
+
+  .quiz-feedback{width:100%;margin-top:16px;text-align:center;font-size:0.85rem;}
+  .quiz-feedback .fb-status{font-weight:700;margin-bottom:8px;}
+  .quiz-feedback .fb-status.correct{color:var(--green);}
+  .quiz-feedback .fb-status.wrong{color:var(--red);}
+  .quiz-feedback .fb-translation{color:var(--accent);font-size:0.78rem;line-height:1.6;border-top:1px dashed rgba(139,69,19,.25);padding-top:10px;margin-top:6px;}
+
+  .btn-quiz-next{width:100%;margin-top:16px;padding:14px 0;border:none;border-radius:12px;background:var(--red);color:#fff;font-family:'Noto Sans Thai',sans-serif;font-size:0.9rem;font-weight:600;cursor:pointer;box-shadow:0 4px 12px rgba(192,57,43,.3);}
+  .btn-quiz-next:active{transform:scale(.97);background:#a93226;}
+
+  .quiz-result-score{font-family:'Noto Serif SC',serif;font-size:2.4rem;color:var(--red);font-weight:900;margin-bottom:4px;}
+  .quiz-result-sub{font-size:0.9rem;color:var(--accent);margin-bottom:18px;}
+  .quiz-review-title{text-align:left;font-size:0.7rem;color:var(--gold);letter-spacing:.12em;text-transform:uppercase;margin-bottom:6px;font-weight:700;}
+  .quiz-review-item{text-align:left;border-top:1px solid rgba(139,69,19,.12);padding:10px 2px;display:flex;justify-content:space-between;align-items:baseline;gap:10px;}
+  .quiz-review-item .rzh{font-family:'Noto Serif SC',serif;font-size:1.25rem;color:var(--ink);white-space:nowrap;}
+  .quiz-review-item .rmeta{color:var(--accent);font-size:0.78rem;text-align:right;}
+  .quiz-perfect{font-size:0.85rem;color:var(--green);margin-top:8px;}
 </style>
 </head>
 <body>
@@ -51,22 +101,62 @@
   <div class="title-zh">词汇卡片</div>
   <div class="title-th">แฟลชการ์ดคำศัพท์ภาษาจีน</div>
 </header>
-<div class="controls">
-  <input class="search" id="search" type="text" placeholder="ค้นหาคำศัพท์ (จีน/พินอิน/ไทย)...">
+
+<div class="tabs">
+  <button class="tab active" id="tabCard" onclick="switchTab('card')">🎴 การ์ด</button>
+  <button class="tab" id="tabQuiz" onclick="switchTab('quiz')">📝 แบบฝึกหัด</button>
 </div>
-<div class="progress-bar-wrap"><div class="progress-bar" id="progressBar"></div></div>
-<div class="counter" id="counter"></div>
-<div class="scene" id="scene" onclick="flipCard()">
-  <div class="card" id="card">
-    <div class="face face-front"><div class="zh-char" id="frontChar"></div><div class="tap-hint">แตะเพื่อดูคำตอบ</div></div>
-    <div class="face face-back" id="backFace"></div>
+
+<!-- FLASHCARD VIEW -->
+<div id="cardView">
+  <div class="controls">
+    <input class="search" id="search" type="text" placeholder="ค้นหาคำศัพท์ (จีน/พินอิน/ไทย)...">
   </div>
+  <div class="progress-bar-wrap"><div class="progress-bar" id="progressBar"></div></div>
+  <div class="counter" id="counter"></div>
+  <div class="scene" id="scene" onclick="flipCard()">
+    <div class="card" id="card">
+      <div class="face face-front"><div class="zh-char" id="frontChar"></div><div class="tap-hint">แตะเพื่อดูคำตอบ</div></div>
+      <div class="face face-back" id="backFace"></div>
+    </div>
+  </div>
+  <div class="nav">
+    <button class="btn btn-prev" onclick="prevCard()">◀ ก่อนหน้า</button>
+    <button class="btn btn-next" onclick="nextCard()">ถัดไป ▶</button>
+  </div>
+  <button class="btn-shuffle" onclick="shuffleCards()">🔀 สุ่มลำดับใหม่</button>
 </div>
-<div class="nav">
-  <button class="btn btn-prev" onclick="prevCard()">◀ ก่อนหน้า</button>
-  <button class="btn btn-next" onclick="nextCard()">ถัดไป ▶</button>
+
+<!-- QUIZ VIEW -->
+<div id="quizView" style="display:none">
+
+  <div id="quizIntro">
+    <div class="quiz-box">
+      <div class="quiz-intro-title">แบบฝึกหัดทบทวน HSK4</div>
+      <div class="quiz-intro-desc">สุ่ม 20 ข้อจากคำศัพท์ทั้งหมด<br>ผสมทั้งแบบ "เลือกความหมาย" และ "เติมคำในประโยค"</div>
+      <button class="btn-start-quiz" onclick="startQuiz()">เริ่มทำแบบฝึกหัด</button>
+    </div>
+  </div>
+
+  <div id="quizPlay" style="display:none;width:100%;">
+    <div class="quiz-progress-wrap"><div class="quiz-progress-bar" id="quizProgressBar"></div></div>
+    <div class="quiz-counter" id="quizCounter"></div>
+    <div class="quiz-box" id="quizCard"></div>
+    <div class="quiz-feedback" id="quizFeedback"></div>
+    <button class="btn-quiz-next" id="quizNextBtn" onclick="nextQuestion()" style="display:none">ข้อต่อไป ▶</button>
+  </div>
+
+  <div id="quizResult" style="display:none;width:100%;">
+    <div class="quiz-box" style="text-align:center;">
+      <div class="quiz-result-score" id="quizScoreText"></div>
+      <div class="quiz-result-sub" id="quizScoreSub"></div>
+      <div id="quizReviewList"></div>
+      <button class="btn-start-quiz" onclick="startQuiz()" style="margin-top:18px;">ทำใหม่อีกรอบ 🔀</button>
+    </div>
+  </div>
+
 </div>
-<button class="btn-shuffle" onclick="shuffleCards()">🔀 สุ่มลำดับใหม่</button>
+
 <script>
 const allVocab = [
 {
@@ -1659,10 +1749,21 @@ const allVocab = [
 "exTh": "เขาชอบเล่นบาสเกตบอลมาก"
 }
 ];
+
+/* ===================== TABS ===================== */
+function switchTab(tab){
+  document.getElementById('cardView').style.display = tab==='card' ? '' : 'none';
+  document.getElementById('quizView').style.display = tab==='quiz' ? '' : 'none';
+  document.getElementById('tabCard').classList.toggle('active', tab==='card');
+  document.getElementById('tabQuiz').classList.toggle('active', tab==='quiz');
+}
+
+/* ===================== FLASHCARDS ===================== */
 let vocab = [...allVocab];
 let order = [...Array(vocab.length).keys()];
 let current = 0;
 let flipped = false;
+
 function charClass(zh){
   const len = [...zh].length;
   if(len >= 6) return 'zh-char xlong';
@@ -1719,11 +1820,163 @@ document.getElementById('search').addEventListener('input', function(e){
   order=[...Array(vocab.length).keys()];
   current=0; renderCard();
 });
-document.addEventListener('keydown', e=>{
-  if(e.key==='ArrowRight')nextCard();
-  else if(e.key==='ArrowLeft')prevCard();
-  else if(e.key===' '||e.key==='Enter'){e.preventDefault();flipCard();}
-});
+
+/* ===================== QUIZ ===================== */
+let quizQuestions = [];
+let quizIndex = 0;
+let quizScore = 0;
+let quizWrong = [];
+let quizAnswered = false;
+
+function shuffleArr(arr){
+  for(let i=arr.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[arr[i],arr[j]]=[arr[j],arr[i]];}
+  return arr;
+}
+
+function buildQuiz(n){
+  const pool = shuffleArr([...allVocab]);
+  const count = Math.min(n, pool.length);
+  const selected = pool.slice(0, count);
+  return selected.map(v=>{
+    const canCloze = v.exZh.indexOf(v.zh) !== -1;
+    const type = (canCloze && Math.random() < 0.5) ? 'cloze' : 'meaning';
+    if(type === 'meaning'){
+      let seen = new Set([v.meaning]);
+      let distractors = [];
+      for(const d of shuffleArr([...allVocab])){
+        if(!seen.has(d.meaning)){ distractors.push(d.meaning); seen.add(d.meaning); }
+        if(distractors.length===3) break;
+      }
+      const options = shuffleArr([v.meaning, ...distractors]);
+      return {type:'meaning', zh:v.zh, pinyin:v.pinyin, options, answer:v.meaning, exZh:v.exZh, exTh:v.exTh};
+    } else {
+      const sentence = v.exZh.replace(v.zh, '<span class="blank">＿＿＿＿</span>');
+      let seen = new Set([v.zh]);
+      let distractors = [];
+      for(const d of shuffleArr([...allVocab])){
+        if(!seen.has(d.zh)){ distractors.push(d.zh); seen.add(d.zh); }
+        if(distractors.length===3) break;
+      }
+      const options = shuffleArr([v.zh, ...distractors]);
+      return {type:'cloze', sentence, options, answer:v.zh, pinyin:v.pinyin, meaning:v.meaning, exTh:v.exTh};
+    }
+  });
+}
+
+function startQuiz(){
+  quizQuestions = buildQuiz(20);
+  quizIndex = 0;
+  quizScore = 0;
+  quizWrong = [];
+  document.getElementById('quizIntro').style.display='none';
+  document.getElementById('quizResult').style.display='none';
+  document.getElementById('quizPlay').style.display='';
+  renderQuestion();
+}
+
+function renderQuestion(){
+  quizAnswered = false;
+  const q = quizQuestions[quizIndex];
+  document.getElementById('quizCounter').textContent = 'ข้อ '+(quizIndex+1)+' / '+quizQuestions.length+'   •   ตอบถูก '+quizScore+' ข้อ';
+  document.getElementById('quizProgressBar').style.width = (quizIndex/quizQuestions.length*100)+'%';
+  document.getElementById('quizFeedback').innerHTML = '';
+  document.getElementById('quizNextBtn').style.display='none';
+
+  let html = '';
+  if(q.type === 'meaning'){
+    html += '<div class="quiz-type-label">เลือกความหมายที่ถูกต้อง</div>';
+    html += '<div class="quiz-question-zh">'+q.zh+'</div>';
+    html += '<div class="quiz-question-pinyin">'+q.pinyin+'</div>';
+    html += '<div class="quiz-options">';
+    q.options.forEach((opt,i)=>{
+      html += '<button class="quiz-option" onclick="answerQuestion('+i+')">'+opt+'</button>';
+    });
+    html += '</div>';
+  } else {
+    html += '<div class="quiz-type-label">เติมคำในช่องว่างให้ถูกต้อง</div>';
+    html += '<div class="quiz-sentence">'+q.sentence+'</div>';
+    html += '<div class="quiz-options">';
+    q.options.forEach((opt,i)=>{
+      html += '<button class="quiz-option zh-option" onclick="answerQuestion('+i+')">'+opt+'</button>';
+    });
+    html += '</div>';
+  }
+  document.getElementById('quizCard').innerHTML = html;
+}
+
+function answerQuestion(idx){
+  if(quizAnswered) return;
+  quizAnswered = true;
+  const q = quizQuestions[quizIndex];
+  const buttons = document.querySelectorAll('#quizCard .quiz-option');
+  const isCorrect = q.options[idx] === q.answer;
+  buttons.forEach((b,i)=>{
+    b.classList.add('disabled');
+    if(q.options[i] === q.answer) b.classList.add('correct');
+    else if(i===idx) b.classList.add('wrong');
+  });
+
+  let fbHtml = '';
+  if(isCorrect){
+    quizScore++;
+    fbHtml += '<div class="fb-status correct">✅ ถูกต้อง!</div>';
+  } else {
+    quizWrong.push(q);
+    fbHtml += '<div class="fb-status wrong">❌ ยังไม่ถูก เฉลยคือ "'+q.answer+'"</div>';
+  }
+  if(q.type === 'meaning'){
+    fbHtml += '<div class="fb-translation">'+q.exZh+'<br>'+q.exTh+'</div>';
+  } else {
+    fbHtml += '<div class="fb-translation">'+q.pinyin+' — '+q.meaning+'<br>'+q.exTh+'</div>';
+  }
+  document.getElementById('quizFeedback').innerHTML = fbHtml;
+
+  const nextBtn = document.getElementById('quizNextBtn');
+  nextBtn.style.display = '';
+  nextBtn.textContent = (quizIndex < quizQuestions.length-1) ? 'ข้อต่อไป ▶' : 'ดูผลลัพธ์ 🎉';
+}
+
+function nextQuestion(){
+  if(quizIndex < quizQuestions.length-1){
+    quizIndex++;
+    renderQuestion();
+  } else {
+    showResult();
+  }
+}
+
+function showResult(){
+  document.getElementById('quizPlay').style.display='none';
+  document.getElementById('quizResult').style.display='';
+  document.getElementById('quizProgressBar').style.width='100%';
+  const total = quizQuestions.length;
+  document.getElementById('quizScoreText').textContent = quizScore+' / '+total;
+
+  const pct = Math.round(quizScore/total*100);
+  let sub = '';
+  if(pct===100) sub='สุดยอด! ตอบถูกทุกข้อเลย 🎉';
+  else if(pct>=90) sub='ยอดเยี่ยมมาก! 🌟';
+  else if(pct>=70) sub='ทำได้ดีมาก!';
+  else if(pct>=50) sub='พอใช้ ลองทบทวนเพิ่มอีกหน่อยนะ';
+  else sub='ลองทบทวนคำศัพท์เหล่านี้อีกครั้งนะ';
+  document.getElementById('quizScoreSub').textContent = sub;
+
+  let reviewHtml = '';
+  if(quizWrong.length>0){
+    reviewHtml += '<div class="quiz-review-title">คำที่ควรทบทวน</div>';
+    quizWrong.forEach(q=>{
+      const zh = q.type==='meaning' ? q.zh : q.answer;
+      const pinyin = q.pinyin;
+      const meaning = q.type==='meaning' ? q.answer : q.meaning;
+      reviewHtml += '<div class="quiz-review-item"><div class="rzh">'+zh+'</div><div class="rmeta">'+pinyin+'<br>'+meaning+'</div></div>';
+    });
+  } else {
+    reviewHtml += '<div class="quiz-perfect">ไม่มีคำที่ตอบผิดเลย เก่งมาก!</div>';
+  }
+  document.getElementById('quizReviewList').innerHTML = reviewHtml;
+}
+
+/* ===================== INIT ===================== */
 renderCard();
 </script>
 </body>
