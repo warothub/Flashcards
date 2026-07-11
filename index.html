@@ -10,7 +10,7 @@
   *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
   body{background-color:var(--paper);background-image:repeating-linear-gradient(0deg,transparent,transparent 39px,rgba(180,160,100,0.15) 39px,rgba(180,160,100,0.15) 40px),repeating-linear-gradient(90deg,transparent,transparent 39px,rgba(180,160,100,0.08) 39px,rgba(180,160,100,0.08) 40px);min-height:100vh;font-family:'Noto Sans Thai',sans-serif;display:flex;flex-direction:column;align-items:center;padding:16px 14px 40px;overflow-x:hidden;}
   header{text-align:center;margin-bottom:12px;width:100%;}
-  .title-zh{font-family:'Noto Serif SC',cursive;font-size:1.8rem;color:var(--red);line-height:1;letter-spacing:0.1em;}
+  .title-zh{font-family:'Ma Shan Zheng',cursive;font-size:1.8rem;color:var(--red);line-height:1;letter-spacing:0.1em;}
   .title-th{font-size:0.75rem;color:var(--accent);letter-spacing:0.05em;margin-top:3px;opacity:0.8;}
 
   /* TABS */
@@ -34,7 +34,7 @@
   .face-back{background:linear-gradient(145deg,#fff8ee,#f5ece0);border:1.5px solid rgba(139,69,19,0.22);transform:rotateY(180deg);overflow-y:auto;justify-content:flex-start;padding-top:20px;}
   .face-front::before,.face-front::after{content:'\2726';position:absolute;color:rgba(192,57,43,0.18);font-size:1.1rem;}
   .face-front::before{top:12px;left:14px;}.face-front::after{bottom:12px;right:14px;}
-  .zh-char{font-family:'Noto Serif SC',cursive;font-size:4.5rem;color:var(--ink);line-height:1.1;text-align:center;user-select:none;}
+  .zh-char{font-family:'Ma Shan Zheng',cursive;font-size:4.5rem;color:var(--ink);line-height:1.1;text-align:center;user-select:none;}
   .zh-char.long{font-size:3rem;}
   .zh-char.xlong{font-size:2.2rem;}
   .tap-hint{position:absolute;bottom:14px;font-size:0.65rem;color:rgba(139,69,19,0.5);letter-spacing:0.06em;}
@@ -66,7 +66,7 @@
   .quiz-counter{font-size:0.75rem;color:var(--accent);text-align:center;margin-bottom:14px;letter-spacing:0.05em;}
 
   .quiz-type-label{font-size:0.62rem;letter-spacing:.14em;color:var(--gold);text-transform:uppercase;margin-bottom:14px;font-weight:700;}
-  .quiz-question-zh{font-family:'Noto Serif SC',cursive;font-size:3rem;color:var(--ink);margin-bottom:6px;}
+  .quiz-question-zh{font-family:'Ma Shan Zheng',cursive;font-size:3rem;color:var(--ink);margin-bottom:6px;}
   .quiz-question-pinyin{font-family:'Noto Serif SC',serif;font-size:1.05rem;color:var(--red);margin-bottom:18px;}
   .quiz-sentence{font-family:'Noto Serif SC',serif;font-size:1.2rem;color:var(--ink);line-height:2;margin-bottom:18px;}
   .quiz-sentence .blank{color:var(--red);font-weight:700;letter-spacing:2px;}
@@ -800,8 +800,8 @@ const allVocab = [
 "zh": "牙刷",
 "pinyin": "yáshuā",
 "meaning": "แปรงสีฟัน",
-"exZh": "我每天换一次牙刷头。",
-"exTh": "ฉันเปลี่ยนหัวแปรงสีฟันทุกวัน"
+"exZh": "我每三个月换一次牙刷。",
+"exTh": "ฉันเปลี่ยนแปรงสีฟันทุกสามเดือน"
 },
 {
 "zh": "各",
@@ -848,9 +848,9 @@ const allVocab = [
 {
 "zh": "得了",
 "pinyin": "déle",
-"meaning": "ได้ / สำเร็จ (บอกความเป็นไปได้)",
-"exZh": "这么多东西我一个人拿不了。",
-"exTh": "ของเยอะขนาดนี้ฉันคนเดียวถือไม่ไหว"
+"meaning": "พอแล้ว / โอเคแล้ว (หยุดได้แล้ว)",
+"exZh": "得了，别说了，我已经知道了。",
+"exTh": "พอแล้ว อย่าพูดอีกเลย ฉันรู้แล้ว"
 },
 {
 "zh": "经常",
@@ -1908,6 +1908,244 @@ const allVocab = [
 "meaning": "ออกนอกประเทศ / ไปต่างประเทศ",
 "exZh": "听说你准备出国读博士？",
 "exTh": "ได้ยินว่าเธอเตรียมจะออกไปเรียนต่อปริญญาเอกต่างประเทศ"
+},
+{
+"zh": "掌握",
+"pinyin": "zhǎngwò",
+"meaning": "เชี่ยวชาญ / กุมอยู่ในมือ",
+"exZh": "他已经掌握了四门外语。",
+"exTh": "เขาเชี่ยวชาญภาษาต่างประเทศสี่ภาษาแล้ว"
+},
+{
+"zh": "一定",
+"pinyin": "yīdìng",
+"meaning": "แน่นอน / ต้อง / ระดับหนึ่ง",
+"exZh": "你一定要准时到。",
+"exTh": "เธอต้องมาให้ตรงเวลาแน่นอน"
+},
+{
+"zh": "重要",
+"pinyin": "zhòngyào",
+"meaning": "สำคัญ",
+"exZh": "明天的面试很重要。",
+"exTh": "การสัมภาษณ์พรุ่งนี้สำคัญมาก"
+},
+{
+"zh": "进步",
+"pinyin": "jìnbù",
+"meaning": "ก้าวหน้า / ความก้าวหน้า",
+"exZh": "他的汉语进步很快。",
+"exTh": "ภาษาจีนของเขาก้าวหน้าอย่างรวดเร็ว"
+},
+{
+"zh": "法律",
+"pinyin": "fǎlǜ",
+"meaning": "กฎหมาย",
+"exZh": "中国有很严格的法律。",
+"exTh": "จีนมีกฎหมายที่เข้มงวดมาก"
+},
+{
+"zh": "知识",
+"pinyin": "zhīshi",
+"meaning": "ความรู้",
+"exZh": "他花了很长时间积累知识。",
+"exTh": "เขาใช้เวลานานสั่งสมความรู้"
+},
+{
+"zh": "改变",
+"pinyin": "gǎibiàn",
+"meaning": "เปลี่ยนแปลง",
+"exZh": "科学技术改变了我们的生活。",
+"exTh": "วิทยาศาสตร์และเทคโนโลยีเปลี่ยนแปลงชีวิตเรา"
+},
+{
+"zh": "禁止",
+"pinyin": "jìnzhǐ",
+"meaning": "ห้าม / ต้องห้าม",
+"exZh": "这个地方禁止进入。",
+"exTh": "สถานที่นี้ห้ามเข้า"
+},
+{
+"zh": "推迟",
+"pinyin": "tuīchí",
+"meaning": "เลื่อนออกไป / เลื่อนเวลา",
+"exZh": "会议推迟了半个小时。",
+"exTh": "การประชุมถูกเลื่อนออกไปครึ่งชั่วโมง"
+},
+{
+"zh": "一直",
+"pinyin": "yīzhí",
+"meaning": "ตลอดมา / ตรงไปเรื่อยๆ",
+"exZh": "他一直坚持学习汉语。",
+"exTh": "เขายืนหยัดเรียนภาษาจีนมาตลอด"
+},
+{
+"zh": "顺便",
+"pinyin": "shùnbiàn",
+"meaning": "สะดวกไปด้วย / แวะระหว่างทาง",
+"exZh": "我走路回家，顺便在超市买东西。",
+"exTh": "ฉันเดินกลับบ้าน แวะซื้อของที่ซุปเปอร์มาร์เก็ตสะดวกไปด้วย"
+},
+{
+"zh": "估计",
+"pinyin": "gūjì",
+"meaning": "ประมาณ / คาดว่า",
+"exZh": "我估计今天温度大约40度。",
+"exTh": "ฉันคาดว่าวันนี้อุณหภูมิประมาณ 40 องศา"
+},
+{
+"zh": "大约",
+"pinyin": "dàyuē",
+"meaning": "ประมาณ / ราวๆ",
+"exZh": "到学校大约要四十分钟。",
+"exTh": "ไปถึงโรงเรียนประมาณสี่สิบนาที"
+},
+{
+"zh": "恐怕",
+"pinyin": "kǒngpà",
+"meaning": "เกรงว่า / กลัวว่า",
+"exZh": "我恐怕今天不可以跟你去看电影了。",
+"exTh": "เกรงว่าวันนี้ฉันไม่สามารถไปดูหนังกับเธอได้แล้ว"
+},
+{
+"zh": "交流",
+"pinyin": "jiāoliú",
+"meaning": "แลกเปลี่ยน / สื่อสาร",
+"exZh": "我们需要多交流，互相了解。",
+"exTh": "เราต้องแลกเปลี่ยนกันมากขึ้น เพื่อทำความเข้าใจกัน"
+},
+{
+"zh": "刚才",
+"pinyin": "gāngcái",
+"meaning": "เมื่อกี้ / เมื่อสักครู่",
+"exZh": "刚才跟你说话的那个女孩儿是谁？",
+"exTh": "ผู้หญิงที่คุยกับเธอเมื่อกี้คือใคร"
+},
+{
+"zh": "方法",
+"pinyin": "fāngfǎ",
+"meaning": "วิธีการ / วิธี",
+"exZh": "学习汉语要找到适合自己的方法。",
+"exTh": "การเรียนภาษาจีนต้องหาวิธีที่เหมาะกับตัวเอง"
+},
+{
+"zh": "呼吸",
+"pinyin": "hūxī",
+"meaning": "หายใจ",
+"exZh": "新鲜空气让我们呼吸更顺畅。",
+"exTh": "อากาศบริสุทธิ์ทำให้เราหายใจได้สะดวกขึ้น"
+},
+{
+"zh": "到处",
+"pinyin": "dàochù",
+"meaning": "ทุกที่ / ทั่วทุกแห่ง",
+"exZh": "不用到处找了，书在沙发上呢。",
+"exTh": "ไม่ต้องหาทุกที่หรอก หนังสืออยู่บนโซฟานั่น"
+},
+{
+"zh": "文章",
+"pinyin": "wénzhāng",
+"meaning": "บทความ / งานเขียน",
+"exZh": "这几篇文章您什么时候要？",
+"exTh": "บทความพวกนี้คุณต้องการเมื่อไหร่"
+},
+{
+"zh": "寒假",
+"pinyin": "hánjià",
+"meaning": "วันหยุดฤดูหนาว / ปิดเทอมหนาว",
+"exZh": "只要在寒假前交给我就行。",
+"exTh": "แค่ส่งให้ฉันก่อนปิดเทอมหนาวก็ได้"
+},
+{
+"zh": "打扰",
+"pinyin": "dǎrǎo",
+"meaning": "รบกวน",
+"exZh": "打扰了，再见。",
+"exTh": "รบกวนไปแล้วนะ ลาก่อน"
+},
+{
+"zh": "师傅",
+"pinyin": "shīfu",
+"meaning": "ช่าง / นาย (เรียกผู้ชายที่ไม่รู้จัก)",
+"exZh": "请问王师傅在家吗？",
+"exTh": "ขอถามหน่อย อาจารย์หวังอยู่บ้านไหม"
+},
+{
+"zh": "诚实",
+"pinyin": "chéngshí",
+"meaning": "ซื่อสัตย์ / จริงใจ",
+"exZh": "他的优点是有礼貌、诚实。",
+"exTh": "จุดเด่นของเขาคือมีมารยาทและซื่อสัตย์"
+},
+{
+"zh": "能吃苦",
+"pinyin": "néng chīkǔ",
+"meaning": "อดทนต่อความลำบาก / ทนทาน",
+"exZh": "他能吃苦，不怕困难。",
+"exTh": "เขาอดทนต่อความลำบาก ไม่กลัวอุปสรรค"
+},
+{
+"zh": "粗心",
+"pinyin": "cūxīn",
+"meaning": "ไม่ระมัดระวัง / เลินเล่อ",
+"exZh": "他太粗心了，不适合这份工作。",
+"exTh": "เขาเลินเล่อเกินไป ไม่เหมาะกับงานนี้"
+},
+{
+"zh": "印象",
+"pinyin": "yìnxiàng",
+"meaning": "ความประทับใจ / ภาพจำ",
+"exZh": "你对小李的印象怎么样？",
+"exTh": "เธอมีความประทับใจต่อเสี่ยวหลี่อย่างไร"
+},
+{
+"zh": "优点",
+"pinyin": "yōudiǎn",
+"meaning": "จุดเด่น / ข้อดี",
+"exZh": "他的优点是诚实、能吃苦。",
+"exTh": "จุดเด่นของเขาคือซื่อสัตย์และอดทน"
+},
+{
+"zh": "忽然",
+"pinyin": "hūrán",
+"meaning": "ทันทีทันใด / กะทันหัน",
+"exZh": "怎么忽然想起买花了？",
+"exTh": "ทำไมถึงนึกอยากซื้อดอกไม้ขึ้นมากะทันหัน"
+},
+{
+"zh": "复印",
+"pinyin": "fùyìn",
+"meaning": "ถ่ายเอกสาร / ก็อปปี้",
+"exZh": "把这个文件复印五份。",
+"exTh": "ถ่ายเอกสารนี้ห้าชุด"
+},
+{
+"zh": "杂志",
+"pinyin": "zázhì",
+"meaning": "นิตยสาร",
+"exZh": "上午刚借的那本杂志，怎么找不到了？",
+"exTh": "นิตยสารที่เพิ่งยืมมาตอนเช้า หายไปไหนแล้ว"
+},
+{
+"zh": "翻译",
+"pinyin": "fānyì",
+"meaning": "แปล / นักแปล",
+"exZh": "请帮我翻译这篇文章。",
+"exTh": "กรุณาช่วยแปลบทความนี้ให้ฉันด้วย"
+},
+{
+"zh": "拒绝",
+"pinyin": "jùjué",
+"meaning": "ปฏิเสธ / ไม่ยอมรับ",
+"exZh": "小李为什么被拒绝了？",
+"exTh": "ทำไมเสี่ยวหลี่ถึงถูกปฏิเสธ"
+},
+{
+"zh": "父亲",
+"pinyin": "fùqīn",
+"meaning": "พ่อ (ทางการ)",
+"exZh": "今天是父亲节，快去买礼物吧。",
+"exTh": "วันนี้เป็นวันพ่อ รีบไปซื้อของขวัญเถอะ"
 }
 ];
 
